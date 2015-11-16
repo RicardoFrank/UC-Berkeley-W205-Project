@@ -224,27 +224,25 @@ if __name__ == '__main__':
    p = argparse.ArgumentParser(
       description='Suck filtered tweets from twitter and write them into a store'
       , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-   p.add_argument('keywords', metavar='KW', nargs='+', help='filter keywords')
-   maxTweetsDef = 100
+   p.add_argument('harasser', nargs=1, help='screen name of harasser')
+   p.add_argument('--ntweets', dest='nTweets', type=int, default=1000
+                               , help='number of recent tweets written by harasser to publish')
    p.add_argument('--max-tweets', dest='maxTweets', type=int, default=100
-                                , help='max tweets written per file or line (default: {0})'.format(maxTweetsDef))
+                                , help='max tweets written per file or line')
    kargs = p.add_argument_group('kafka', 'write tweets into Kafka store')
    kargs.add_argument('--broker', dest='bk_endpt', nargs=1, metavar='ENDPOINT'
                                 , help='broker endpoints for kafka store')
-   topicDef = 'tweets'
+   topicDef = 'harassing'
    kargs.add_argument('--topic', dest='topic'
                                , help='Kafka topic to which tweets are written (default: {0})'.format(topicDef))
    fargs = p.add_argument_group('file', 'write tweets into a file system store')
-   patDef = 'tweets/%Y-%m-%d/%05n'
+   patDef = 'harassers/%Y-%m-%d/%05n'
    fargs.add_argument('--pat', dest='pat'
                              , help='path name pattern to store tweets (default: {0})'.format(patDef.replace('%', '%%')))
    fargs.add_argument('--max-file-size', dest='maxSize', type=int
                                        , help='max bytes (more or less) written per tweet file')
 
    args = p.parse_args()
-   pp = pprint.PrettyPrinter(indent=4)
-   for x in [args, kargs, fargs]:
-      pp.pprint(x)
 
    # Handle mutually exclusive arguments;
    # ideally, argparse could handle this...
@@ -263,8 +261,6 @@ if __name__ == '__main__':
    # mutually exclusive groups ourselves
    if args.pat is None:
       args.pat = patDef
-   if args.maxTweets is None:
-      args.pat = maxTweetsDef
    if args.topic is None:
       args.topic = topicDef
 
@@ -276,9 +272,9 @@ if __name__ == '__main__':
    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
    auth.set_access_token(access_token, access_token_secret)
 
-   # Handle signals
-   signal.signal(signal.SIGINT, interrupt)
-   signal.signal(signal.SIGTERM, interrupt)
+   ## Handle signals
+   #signal.signal(signal.SIGINT, interrupt)
+   #signal.signal(signal.SIGTERM, interrupt)
 
    api = tweepy.API(auth_handler=auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
    print("tweepy API created")
@@ -290,19 +286,9 @@ if __name__ == '__main__':
    s = TweetSerializer(store = st)
    st.serializer = s
    w = TweetWriter(s.write)
-   stream = tweepy.Stream(auth, w)
-   print("twitter stream created")
 
-   # filter stream according to argv, in a separate thread
-   stream.filter(track=sys.argv, async=True)
-   print("filtering tweets")
-
-   # Pass the time, waiting for an interrupt
-   while not w.stopped:
-      signal.pause()
-      print("signalled")
-   stream.disconnect()
-   stream._thread.join()
+   for tweet in tweepy.Cursor(api.user_timeline,screen_name=args.harasser, count=args.nTweets).items():
+      w.on_data(tweet._json)
    s.end()
 
 # vim: expandtab shiftwidth=3 softtabstop=3 tabstop=3
