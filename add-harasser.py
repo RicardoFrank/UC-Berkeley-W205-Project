@@ -231,7 +231,7 @@ if __name__ == '__main__':
                                 , help='max tweets written per file or line')
    kargs = p.add_argument_group('kafka', 'write tweets into Kafka store')
    kargs.add_argument('--broker', dest='bk_endpt', nargs=1, metavar='ENDPOINT'
-                                , help='broker endpoints for kafka store')
+                                , help='broker endpoint for kafka store')
    topicDef = 'harassing-tweets'
    kargs.add_argument('--topic', dest='topic'
                                , help='Kafka topic to which tweets are written (default: {0})'.format(topicDef))
