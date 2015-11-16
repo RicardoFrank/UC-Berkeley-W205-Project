@@ -9,42 +9,7 @@ from reentrantmethod import ReentrantMethod
 from filetweetstore import FileTweetStore
 from kafkatweetstore import KafkaTweetStore
 from tweetwriter import TweetWriter
-
-
-class TweetSerializer(object):
-   first = None
-   ended = None
-   store = None
-
-   def __init__(self, store = None):
-      self.store = store
-      self.ended = True
-      ReentrantMethod(self, self.end)
-
-   def start(self):
-      self.store.write("[\n")
-      self.first = True
-      self.ended = False
-
-   def end(self):
-      if not self.ended:
-         self.store.write("\n]\n")
-         self.store.close()
-         self.first = False
-         self.ended = True
-
-   def write(self, tweet):
-      if self.ended:
-         self.start()
-      if not self.first:
-         self.store.write(",\n")
-      self.first = False
-      self.store.writeTweet(json.dumps(tweet
-                                       , indent=4
-                                       , separators=(',', ': ')).encode('utf8'))
-
-   def closing(self):
-      self.end()
+from tweetserializer import TweetSerializer
 
 def interrupt(signum, frame):
    stream.disconnect()
