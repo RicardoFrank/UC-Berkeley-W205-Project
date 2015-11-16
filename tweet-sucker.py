@@ -225,9 +225,8 @@ if __name__ == '__main__':
       description='Suck filtered tweets from twitter and write them into a store'
       , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
    p.add_argument('keywords', metavar='KW', nargs='+', help='filter keywords')
-   maxTweetsDef = 100
    p.add_argument('--max-tweets', dest='maxTweets', type=int, default=100
-                                , help='max tweets written per file or line (default: {0})'.format(maxTweetsDef))
+                                , help='max tweets written per file or line')
    kargs = p.add_argument_group('kafka', 'write tweets into Kafka store')
    kargs.add_argument('--broker', dest='bk_endpt', nargs=1, metavar='ENDPOINT'
                                 , help='broker endpoints for kafka store')
@@ -263,8 +262,6 @@ if __name__ == '__main__':
    # mutually exclusive groups ourselves
    if args.pat is None:
       args.pat = patDef
-   if args.maxTweets is None:
-      args.pat = maxTweetsDef
    if args.topic is None:
       args.topic = topicDef
 
