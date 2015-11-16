@@ -8,7 +8,7 @@ import argparse, pprint
 from reentrantmethod import ReentrantMethod
 from filetweetstore import FileTweetStore
 from kafkatweetstore import KafkaTweetStore
-
+from tweetwriter import TweetWriter
 
 
 class TweetSerializer(object):
@@ -45,37 +45,6 @@ class TweetSerializer(object):
 
    def closing(self):
       self.end()
-
-class TweetWriter(tweepy.StreamListener):
-   write = None
-   stopped = False
-
-   def __init__(self, serializer = None):
-      self.write = serializer
-
-   def on_data(self, data):
-      if not self.stopped:
-         self.write(data)
-      return not self.stopped
-
-   def on_disconnect(self, notice):
-      print("disconnected", file=sys.stderr)
-      self.stop()
-      os.kill(os.getpid(), signal.SIGTERM)
-      return False
-
-   def on_error(self, status):
-      print("error from tweet stream: ", status, file=sys.stderr)
-      self.stop()
-      os.kill(os.getpid(), signal.SIGTERM)
-      return False
-
-   def on_exception(self, e):
-      print("exception: ", e)
-      traceback.print_exc()
-
-   def stop(self):
-      self.stopped = True
 
 def interrupt(signum, frame):
    stream.disconnect()
