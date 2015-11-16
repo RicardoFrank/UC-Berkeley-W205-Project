@@ -177,7 +177,7 @@ class TweetSerializer(object):
       if not self.first:
          self.store.write(",\n")
       self.first = False
-      self.store.writeTweet(json.dumps(json.loads(tweet)
+      self.store.writeTweet(json.dumps(tweet
                                        , indent=4
                                        , separators=(',', ': ')).encode('utf8'))
 
@@ -224,7 +224,7 @@ if __name__ == '__main__':
    p = argparse.ArgumentParser(
       description='Suck filtered tweets from twitter and write them into a store'
       , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-   p.add_argument('harasser', nargs=1, help='screen name of harasser')
+   p.add_argument('harasser', help='screen name of harasser')
    p.add_argument('--ntweets', dest='nTweets', type=int, default=1000
                                , help='number of recent tweets written by harasser to publish')
    p.add_argument('--max-tweets', dest='maxTweets', type=int, default=100
@@ -232,7 +232,7 @@ if __name__ == '__main__':
    kargs = p.add_argument_group('kafka', 'write tweets into Kafka store')
    kargs.add_argument('--broker', dest='bk_endpt', nargs=1, metavar='ENDPOINT'
                                 , help='broker endpoints for kafka store')
-   topicDef = 'harassing'
+   topicDef = 'harassing-tweets'
    kargs.add_argument('--topic', dest='topic'
                                , help='Kafka topic to which tweets are written (default: {0})'.format(topicDef))
    fargs = p.add_argument_group('file', 'write tweets into a file system store')
@@ -287,8 +287,14 @@ if __name__ == '__main__':
    st.serializer = s
    w = TweetWriter(s.write)
 
-   for tweet in tweepy.Cursor(api.user_timeline,screen_name=args.harasser, count=args.nTweets).items():
-      w.on_data(tweet._json)
+   try:
+      for tweet in tweepy.Cursor(api.user_timeline,screen_name=args.harasser, count=args.nTweets).items():
+         w.on_data(tweet._json)
+   except KeyboardInterrupt:
+      pass
+   except:
+      w.on_exception(sys.exc_info()[0])
+
    s.end()
 
 # vim: expandtab shiftwidth=3 softtabstop=3 tabstop=3
