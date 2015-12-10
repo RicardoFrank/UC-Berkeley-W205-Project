@@ -1,0 +1,2 @@
+repo/libs	# ignore generated libs repo
+target		# ignore generated artifacts
