@@ -1,4 +1,4 @@
-for i in libs/*.jar ; do
+for i in lib/*.jar ; do
 	j=$(basename $i .jar)
 	base=${j%-*}
 	vers=${j##*-}
