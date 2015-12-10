@@ -5,19 +5,17 @@ import re
 import tweepy, json
 import traceback
 from reentrantmethod import ReentrantMethod
+from tweetstore import TweetStore
 
-class FileTweetStore(object):
+class FileTweetStore(TweetStore):
    """
    Store tweets in files according to a policy.
    """
-   serializer = None
    maxTweets = -1
    maxSize = -1
-   nTweets = 0
    nFiles = 0
    pathPattern = None
    file = None
-   _closing = False
    _path = None
    _substRe = re.compile('(%\d*n)')
 
@@ -42,7 +40,7 @@ class FileTweetStore(object):
                     named 2015-01-01/0001.  As time passes,
                     those files will move to 2015-01-02.
       """
-      self.serializer = serializer
+      TweetStore.__init__(self, serializer)
       self.pathPattern = pathPattern
       if maxTweets != None:
          self.maxTweets = maxTweets
@@ -118,6 +116,7 @@ class FileTweetStore(object):
       if self._closing:
          print("writing to closing tweet store:", ''.join(traceback.format_stack()))
       self.nTweets += 1
+      self.totTweets += 1
       sys.stdout.write('.')
       sys.stdout.flush()
       self.write(tweet)

@@ -1,28 +1,26 @@
 from __future__ import print_function
 from kafka import KafkaClient, SimpleProducer
 import sys
+from tweetstore import TweetStore
 
-class KafkaTweetStore(object):
+class KafkaTweetStore(TweetStore):
    """
    Store tweets in a Kafka log
    """
-   serializer = None
-   _closing = False
    client = None
    producer = None
    topic = None
-   nTweets = 0
    tweetsPerLine = None
 
 
    def __init__(self, serializer = None, endpoint = None, topic = None, tweetsPerLine = None):
       """
       """
-      self.serializer = serializer
       self.client = KafkaClient(endpoint)
       self.producer = SimpleProducer(self.client, async=True)
       self.topic = topic
       self.tweetsPerLine = tweetsPerLine
+      TweetStore.__init__(self, serializer)
       print("created KTS, tweetsPerLine %d" % self.tweetsPerLine)
 
    def message(self, m):
@@ -68,5 +66,6 @@ class KafkaTweetStore(object):
       if self._closing:
          print("writing to closing tweet store:", ''.join(traceback.format_stack()))
       self.nTweets += 1
+      self.totTweets += 1
       self.producer.send_messages(self.topic, tweet)
       self._logTweet()

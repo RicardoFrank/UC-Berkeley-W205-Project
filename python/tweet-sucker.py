@@ -87,6 +87,7 @@ if __name__ == '__main__':
    print("twitter stream created")
 
    # filter stream according to argv, in a separate thread
+   start = time.time()
    if len(args.keywords) > 0:
       stream.filter(track=sys.argv, async=True)
       print("filtering tweets on [" + " ".join(args.keywords) + "]")
@@ -101,5 +102,8 @@ if __name__ == '__main__':
    stream.disconnect()
    stream._thread.join()
    s.end()
+   dt = time.time() - start
+   pp.pprint(vars(st))
+   print("%6.2f tweets/sec" % (st.totTweets/dt))
 
 # vim: expandtab shiftwidth=3 softtabstop=3 tabstop=3
