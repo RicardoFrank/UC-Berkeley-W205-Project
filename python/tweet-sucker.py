@@ -103,7 +103,6 @@ if __name__ == '__main__':
    stream._thread.join()
    s.end()
    dt = time.time() - start
-   pp.pprint(vars(st))
-   print("%6.2f tweets/sec" % (st.totTweets/dt))
+   print("%d tweets in %0.2f seconds: %0.2f tweets/sec" % (st.totTweets, dt, st.totTweets/dt))
 
 # vim: expandtab shiftwidth=3 softtabstop=3 tabstop=3
