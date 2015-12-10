@@ -18,9 +18,9 @@ def interrupt(signum, frame):
 if __name__ == '__main__':
 
    p = argparse.ArgumentParser(
-      description='Suck filtered tweets from twitter and write them into a store'
+      description='Suck tweets, possibly filtered, from twitter and write them into a store'
       , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-   p.add_argument('keywords', metavar='KW', nargs='+', help='filter keywords')
+   p.add_argument('keywords', metavar='KW', nargs='*', help='filter keywords')
    p.add_argument('--max-tweets', dest='maxTweets', type=int, default=100
                                 , help='max tweets written per file or line')
    kargs = p.add_argument_group('kafka', 'write tweets into Kafka store')
@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
    # Handle mutually exclusive arguments;
    # ideally, argparse could handle this...
-   # but it's argument groups that are
+   # but its argument groups are
    # mutually exclusive, not individual
    # arguments, so...nope.
    # is to use a file system store, y
@@ -87,8 +87,12 @@ if __name__ == '__main__':
    print("twitter stream created")
 
    # filter stream according to argv, in a separate thread
-   stream.filter(track=sys.argv, async=True)
-   print("filtering tweets")
+   if len(args.keywords) > 0:
+      stream.filter(track=sys.argv, async=True)
+      print("filtering tweets on [" + " ".join(args.keywords) + "]")
+   else:
+      stream.sample(async=True)
+      print("sampling tweets")
 
    # Pass the time, waiting for an interrupt
    while not w.stopped:
