@@ -1,4 +1,4 @@
 # ignore generated libs repo
 repo/libs
 # ignore generated artifacts
-target/	
+target
