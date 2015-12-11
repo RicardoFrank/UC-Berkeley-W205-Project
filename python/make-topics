@@ -1,0 +1,20 @@
+set -e
+ZK="$1" ; shift
+function zk {
+    $KAFKA_HOME/bin/kafka-topics.sh --zookeeper $ZK "$@"
+}
+function lstopic {
+    zk --list --topic $1
+}
+function istopic {
+    [[ $(lstopic $1 | tail -1) == "$1" ]]
+}
+function mktopic {
+    zk --create --topic $1 --partitions 1 --replication-factor 1
+}
+function assertopic {
+    istopic $1 || mktopic $1
+}
+KAFKA_OPTS=-Djava.net.preferIPv4Stack=true
+assertopic tweets
+assertopic harassing-tweets
