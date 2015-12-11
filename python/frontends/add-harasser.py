@@ -6,7 +6,7 @@ import tweepy, json
 import traceback
 import argparse, pprint
 
-sys.path += [ '.' ]
+sys.path += [ os.getcwd() ]
 from util.reentrantmethod import ReentrantMethod
 from twitter.filetweetstore import FileTweetStore
 from twitter.kafkatweetstore import KafkaTweetStore

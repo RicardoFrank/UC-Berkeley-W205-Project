@@ -1,11 +1,11 @@
-import sys, argparse
+import sys, os, argparse
 import json, re
 import pprint
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 
-sys.path += [ '.' ]
+sys.path += [ os.getcwd() ]
 from classifier.random import RandomTweetClassifier
 from util.singleton import Singleton
 
