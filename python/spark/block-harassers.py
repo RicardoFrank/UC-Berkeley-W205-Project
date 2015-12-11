@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
    pp = pprint.PrettyPrinter(indent=4)
    pp.pprint(args.bk_endpt)
-   ks = KafkaUtils.createDirectStream(ssc, [ 'tweets', 'harassers' ], { "metadata.broker.list": args.bk_endpt })
+   ks = KafkaUtils.createDirectStream(ssc, [ 'tweets', 'harassing-tweets' ], { "metadata.broker.list": args.bk_endpt })
    ks.pprint()
 
    ssc.start()
