@@ -9,8 +9,8 @@ class RandomTweetClassifier(TweetClassifier):
 	TweetClassifier.__init__(self, sc)
 	self.p_harassing = p
 
-    def isHarrassingTweet(self, txt):
+    def isHarassingTweet(self, txt):
     	return random.random() < self.p_harassing
 
-    def addHarrassingTweet(self, txt):
+    def addHarassingTweet(self, txt):
 	pass

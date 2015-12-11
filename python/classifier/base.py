@@ -6,10 +6,10 @@ class TweetClassifier(object):
 	    raise ValueError('no spark context provided')
 	self.sc = sc
 
-    def isHarrassingTweet(self, txt):
+    def isHarassingTweet(self, txt):
     	pass
 
-    def addHarrassingTweet(self, txt):
+    def addHarassingTweet(self, txt):
 	pass
 
     def loadModel(self, path):
