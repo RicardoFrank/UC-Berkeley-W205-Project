@@ -24,28 +24,36 @@ if __name__ == "__main__":
    pp = pprint.PrettyPrinter(indent=4)
    pp.pprint(args.bk_endpt)
 
+   def preprocess(rdd):
+      """
+      Pre-process tweets in rdd so they'll be
+      suitable for use in the downstream topology
+      """
+      return rdd.map(
+         # xform to dicts
+         lambda js: json.loads(js[1])
+      ).filter(
+         # english only
+         lambda tweet: tweet['lang'] == 'en'
+      ).map(
+      # pluck out tweet's text & downcase it
+         lambda tweet: tweet['text'].lower()
+      ).map(
+         # kill punctuation, except for @mentions and #hashtags and spaces
+         lambda txt: re.sub("[^\w\s@#]+", '', txt)
+      ).map(
+         # pprint() can only handle ascii, it seems
+         lambda txt: txt.encode('ascii','ignore')
+      )
+
    tweets = KafkaUtils.createDirectStream(ssc, [ 'tweets' ], { "metadata.broker.list": args.bk_endpt })
    harassing_tweets = KafkaUtils.createDirectStream(ssc, [ 'harassing-tweets' ], { "metadata.broker.list": args.bk_endpt })
 
    tweets.count().pprint()
+   preprocess(tweets).pprint()
 
    harassing_tweets.count().pprint()
-   harassing_tweets.map(
-      # xform to dicts
-      lambda js: json.loads(js[1])
-   ).filter(
-      # english only
-      lambda tweet: tweet['lang'] == 'en'
-   ).map(
-      # pluck out tweet's text & downcase it
-      lambda tweet: tweet['text'].lower()
-   ).map(
-      # kill punctuation, except for @mentions and #hashtags and spaces
-      lambda txt: re.sub("[^\w\s@#]+", '', txt)
-   ).map(
-      # pprint() can only handle ascii, it seems
-      lambda txt: txt.encode('ascii','ignore')
-   ).pprint()
+   preprocess(harassing_tweets).pprint()
 
    ssc.start()
    ssc.awaitTermination()
