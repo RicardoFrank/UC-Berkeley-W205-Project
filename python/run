@@ -15,5 +15,5 @@ done
 
 set -x
 set -e
-sh make-topics $ZKENDPT
-sh run-spark $BKENDPT
+./make-topics $ZKENDPT
+./run-spark $BKENDPT
