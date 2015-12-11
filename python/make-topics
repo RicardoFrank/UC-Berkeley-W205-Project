@@ -1,3 +1,4 @@
+:
 set -e
 ZK="$1" ; shift
 function zk {
