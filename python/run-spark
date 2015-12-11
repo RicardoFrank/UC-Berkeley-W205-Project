@@ -1,28 +1,11 @@
-ME=$(basename $0)
-function err {
-    echo 1>&2 $ME: "$*"
-}
-function fatal {
-    err "$*"
-    exit 1
-}
+. ./sh.fns
 function usage {
-    fatal "--broker <zookeeper host>:<port>"
+    fatal usage: $ME '<kafka-broker endpoint>'
 }
-
-BKENDPT=localhost:9092
-ZKENDPT=localhost:2181
-while : ; do
-    case "$1" in
-    --broker)		shift ; BKENDPT="$1" ;;
-    --zookeeper)	shift ; ZKENDPT="$1" ;;
-    --*)		err "unknown arg: $1" ; usage ;;
-    *)			break
-    esac
-    shift
-done
-
-set -x
-set -e
-sh make-topics $ZKENDPT
-MASTER='local[2]' exec $SPARK_HOME/bin/spark-submit  --jars $SPARK_HOME/external/kafka-assembly/target/spark-streaming-kafka-assembly_2.10-1.5.2.jar  spark/block-harassers.py --broker $BKENDPT "$@"
+if [ -z "$1" ] ; then
+    err missing kafka broker
+    usage
+fi
+MASTER='local[2]' exec $SPARK_HOME/bin/spark-submit \
+	--jars $SPARK_HOME/external/kafka-assembly/target/spark-streaming-kafka-assembly_2.10-1.5.2.jar \
+	spark/block-harassers.py --broker $1

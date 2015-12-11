@@ -1,0 +1,11 @@
+ME=$(basename $0)
+function err {
+    echo 1>&2 $ME: "$*"
+}
+function fatal {
+    err "$*"
+    exit 1
+}
+function usage {
+    fatal "--broker <zookeeper host>:<port>"
+}

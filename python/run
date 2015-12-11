@@ -1,0 +1,18 @@
+. ./sh.fns
+
+BKENDPT=localhost:9092
+ZKENDPT=localhost:2181
+while : ; do
+    case "$1" in
+    --broker)		shift ; BKENDPT="$1" ;;
+    --zookeeper)	shift ; ZKENDPT="$1" ;;
+    --*)		err "unknown arg: $1" ; usage ;;
+    *)			break
+    esac
+    shift
+done
+
+set -x
+set -e
+sh make-topics $ZKENDPT
+sh run-spark $BKENDPT
