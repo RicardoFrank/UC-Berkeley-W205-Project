@@ -3,7 +3,7 @@ class TweetClassifier(object):
 
     def __init__(self, sc=None):
 	if sc is None:
-	    raise ValueError('no spark context provided)
+	    raise ValueError('no spark context provided')
 	self.sc = sc
 
     def isHarrassingTweet(self, txt):
