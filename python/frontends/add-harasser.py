@@ -5,11 +5,12 @@ import re
 import tweepy, json
 import traceback
 import argparse, pprint
-from reentrantmethod import ReentrantMethod
-from filetweetstore import FileTweetStore
-from kafkatweetstore import KafkaTweetStore
-from tweetwriter import TweetWriter
-from tweetserializer import TweetSerializer
+
+from util.reentrantmethod import ReentrantMethod
+from twitter.filetweetstore import FileTweetStore
+from twitter.kafkatweetstore import KafkaTweetStore
+from twitter.tweetwriter import TweetWriter
+from twitter.tweetserializer import TweetSerializer
 
 def interrupt(signum, frame):
    stream.disconnect()

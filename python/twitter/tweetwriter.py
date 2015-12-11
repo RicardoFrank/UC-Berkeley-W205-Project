@@ -1,7 +1,7 @@
 from __future__ import print_function
 import tweepy
 import traceback
-from reentrantmethod import ReentrantMethod
+from util.reentrantmethod import ReentrantMethod
 
 class TweetWriter(tweepy.StreamListener):
    '''

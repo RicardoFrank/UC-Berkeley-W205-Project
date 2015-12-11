@@ -4,8 +4,8 @@ import datetime, time
 import re
 import tweepy, json
 import traceback
-from reentrantmethod import ReentrantMethod
-from tweetstore import TweetStore
+from util.reentrantmethod import ReentrantMethod
+from twitter.tweetstore import TweetStore
 
 class FileTweetStore(TweetStore):
    """

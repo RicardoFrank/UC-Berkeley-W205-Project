@@ -1,5 +1,5 @@
 import json
-from reentrantmethod import ReentrantMethod
+from util.reentrantmethod import ReentrantMethod
 
 class TweetSerializer(object):
    first = None

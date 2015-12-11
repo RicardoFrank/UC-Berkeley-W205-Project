@@ -1,7 +1,7 @@
 from __future__ import print_function
 from kafka import KafkaClient, SimpleProducer
 import sys
-from tweetstore import TweetStore
+from twitter.tweetstore import TweetStore
 
 class KafkaTweetStore(TweetStore):
    """

@@ -4,7 +4,7 @@ import datetime, time
 import re
 import tweepy, json
 import traceback
-from reentrantmethod import ReentrantMethod
+from util.reentrantmethod import ReentrantMethod
 
 class TweetStore(object):
    """
