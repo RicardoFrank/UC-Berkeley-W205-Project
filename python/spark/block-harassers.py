@@ -38,3 +38,4 @@ if __name__ == "__main__":
 
    ssc.start()
    ssc.awaitTermination()
+# vim: expandtab shiftwidth=3 softtabstop=3 tabstop=3
