@@ -1,12 +1,15 @@
 :
 . ./sh.fns
 function usage {
-    fatal usage: $ME '<kafka-broker endpoint>'
+    fatal usage: $ME '[<kafka-broker endpoint>]'
 }
-if [ -z "$1" ] ; then
-    err missing kafka broker
-    usage
-fi
+BK=${1:-localhost:9092}
+case "$BK" in
+*:*)	;;
+*)	err malformed kafka broker: "$BK"
+	usage
+	;;
+esac
 MASTER='local[2]' exec $SPARK_HOME/bin/spark-submit \
 	--jars $SPARK_HOME/external/kafka-assembly/target/spark-streaming-kafka-assembly_2.10-1.5.2.jar \
-	spark/block-harassers.py --broker $1
+	spark/block-harassers.py --broker $BK
