@@ -36,7 +36,7 @@ if __name__ == "__main__":
          lambda js: json.loads(js[1])
       ).filter(
          # english only
-         lambda tweet: tweet['lang'] == 'en'
+         lambda tweet: 'lang' in tweet and tweet['lang'] == 'en'
       ).map(
       # pluck out tweet's text & downcase it
          lambda tweet: tweet['text'].lower()
