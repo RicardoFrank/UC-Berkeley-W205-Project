@@ -51,7 +51,7 @@ if __name__ == "__main__":
    tweets = KafkaUtils.createDirectStream(ssc, [ 'tweets' ], { "metadata.broker.list": args.bk_endpt })
    harassing_tweets = KafkaUtils.createDirectStream(ssc, [ 'harassing-tweets' ], { "metadata.broker.list": args.bk_endpt })
 
-   c = Singleton.get('tweetClassifier', lambda: RandomTweetClassifier(sc, args.modelPath))
+   c = Singleton.get('tweetClassifier', lambda: RandomTweetClassifier(sc, p=0.01))
 
    tweets.count().pprint()
    preprocess(tweets).filter(
