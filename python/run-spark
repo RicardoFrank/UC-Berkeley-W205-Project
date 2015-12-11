@@ -1,3 +1,4 @@
+:
 . ./sh.fns
 function usage {
     fatal usage: $ME '<kafka-broker endpoint>'
