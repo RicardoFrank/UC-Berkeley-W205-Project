@@ -6,7 +6,7 @@ from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 
 sys.path += [ os.getcwd() ]
-from classifier.random import RandomTweetClassifier
+from classifier.rand import RandomTweetClassifier
 from util.singleton import Singleton
 
 if __name__ == "__main__":
