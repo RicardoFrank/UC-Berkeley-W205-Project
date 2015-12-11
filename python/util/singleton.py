@@ -1,7 +1,8 @@
 # Manage singletons by name
 
 class Singleton:
-    def get(name, newfn):
+    @classmethod
+    def get(self, name, newfn):
 	"""
 	Get a singleton named 'name', creating it
 	via newfn() if it doesn't already exist
