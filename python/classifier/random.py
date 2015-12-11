@@ -1,6 +1,6 @@
 import random
 
-from classifier.classifier import TweetClassifier
+from classifier.base import TweetClassifier
 
 class RandomTweetClassifier(TweetClassifier):
     p_harassing = 0.5
