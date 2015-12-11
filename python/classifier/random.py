@@ -1,15 +1,16 @@
 import random
-import classifier.TweetClassifier
+
+from classifier.classifier import TweetClassifier
 
 class RandomTweetClassifier(TweetClassifier):
-    harassing_p = 0.5
+    p_harassing = 0.5
 
     def __init__(self, sc, p = 0.5):
 	TweetClassifier.__init__(self, sc)
-	self.harassing_p = p
+	self.p_harassing = p
 
     def isHarrassingTweet(self, txt):
-    	return random.random() < self.harassing_p
+    	return random.random() < self.p_harassing
 
     def addHarrassingTweet(self, txt):
 	pass
