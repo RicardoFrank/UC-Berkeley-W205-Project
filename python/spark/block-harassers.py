@@ -15,7 +15,7 @@ if __name__ == "__main__":
       , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
    p.add_argument('--broker', dest='bk_endpt', required=True, metavar='ENDPOINT'
 		  , help='broker endpoint for kafka store')
-   p.add_argument('--model-path', dest='modelPath', required=True, metavar='MODEL_PATH'
+   p.add_argument('--model-path', dest='modelPath', metavar='MODEL_PATH', default='file:///tmp/model'
 		  , help="path to read/store tweet classifier's model")
    args = p.parse_args()
 
