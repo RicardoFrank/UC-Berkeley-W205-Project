@@ -1,11 +1,13 @@
 import sys, argparse
+import argparse, pprint, json
 import pprint
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 
-
-import argparse, pprint
+sys.path += [ '.' ]
+#from spark.lda import Classifier
+#from tweets.text
 
 if __name__ == "__main__":
    p = argparse.ArgumentParser(
@@ -13,9 +15,6 @@ if __name__ == "__main__":
       , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
    p.add_argument('--broker', dest='bk_endpt', required=True, metavar='ENDPOINT'
 		  , help='broker endpoint for kafka store')
-   topicDef = 'tweets'
-   p.add_argument('--topic', dest='topic'
-		  , help='Kafka topic to which tweets are written (default: {0})'.format(topicDef))
    args = p.parse_args()
 
    sc = SparkContext("local[2]", "block-harassers")
@@ -29,7 +28,13 @@ if __name__ == "__main__":
    harassing_tweets = KafkaUtils.createDirectStream(ssc, [ 'harassing-tweets' ], { "metadata.broker.list": args.bk_endpt })
 
    tweets.count().pprint()
+
    harassing_tweets.count().pprint()
+   harassing_tweets.map(
+      lambda s: json.loads(s[1])['text']	# pluck out tweet's text
+   ).map(
+      lambda t: t.encode('ascii','ignore')	# pprint() can only handle ascii, it seems
+   ).pprint()
 
    ssc.start()
    ssc.awaitTermination()
