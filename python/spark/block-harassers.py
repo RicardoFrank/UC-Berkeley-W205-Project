@@ -58,9 +58,10 @@ if __name__ == "__main__":
       lambda txt: c.isHarassingTweet(txt)
    ).pprint()
 
-   preprocess(harassing_tweets).flatMap(
-      lambda txt: c.addHarassingTweet(txt)
-   ).pprint()
+   harassing_tweets.count().pprint()
+   #preprocess(harassing_tweets).flatMap(
+      #lambda txt: c.addHarassingTweet(txt)
+   #).pprint()
 
    ssc.start()
    ssc.awaitTermination()
