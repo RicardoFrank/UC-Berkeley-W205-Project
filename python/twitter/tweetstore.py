@@ -13,6 +13,7 @@ class TweetStore(object):
    serializer = None
    nTweets = 0
    totTweets = 0
+   totBytes = 0
    _closing = False
 
    def __init__(self, serializer = None):

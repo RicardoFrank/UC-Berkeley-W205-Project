@@ -117,6 +117,7 @@ class FileTweetStore(TweetStore):
          print("writing to closing tweet store:", ''.join(traceback.format_stack()))
       self.nTweets += 1
       self.totTweets += 1
+      self.totBytes += len(tweet)
       sys.stdout.write('.')
       sys.stdout.flush()
       self.write(tweet)

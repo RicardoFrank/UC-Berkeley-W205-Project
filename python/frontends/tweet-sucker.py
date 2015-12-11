@@ -17,6 +17,14 @@ def interrupt(signum, frame):
    stream.disconnect()
    w.stop()
 
+def humanize(num, suffix='B'):
+    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)
+
+
 if __name__ == '__main__':
 
    p = argparse.ArgumentParser(
@@ -105,6 +113,7 @@ if __name__ == '__main__':
    stream._thread.join()
    s.end()
    dt = time.time() - start
-   print("%d tweets in %0.2f seconds: %0.2f tweets/sec" % (st.totTweets, dt, st.totTweets/dt))
+   print("%d bytes in %d tweets in %0.2f seconds: %0.2f tweets/sec, %0.2f bytes/sec, %s/sec"
+         % (st.totBytes, st.totTweets, dt, st.totTweets/dt, st.totBytes/dt, humanize(st.totBytes/dt)))
 
 # vim: expandtab shiftwidth=3 softtabstop=3 tabstop=3
