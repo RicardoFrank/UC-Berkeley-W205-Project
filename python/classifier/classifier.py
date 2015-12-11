@@ -1,9 +1,19 @@
 class TweetClassifier(object):
-    def isHarrassing(s):
+    model = None
+
+    def __init__(self, sc=None):
+	if sc is None:
+	    raise ValueError('no spark context provided)
+	self.sc = sc
+
+    def isHarrassingTweet(self, txt):
     	pass
 
-    def addHarrassing(s):
+    def addHarrassingTweet(self, txt):
 	pass
 
-    def loadModel(f):
-	pass
+    def loadModel(self, path):
+	model = self.sc.textFile(path)
+
+    def saveModel(self, path):
+	model = self.sc.saveAsTextFile(path)
