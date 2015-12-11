@@ -5,7 +5,7 @@ from classifier.base import TweetClassifier
 class RandomTweetClassifier(TweetClassifier):
     p_harassing = 0.5
 
-    def __init__(self, sc, p = 0.5):
+    def __init__(self, sc = None, p = 0.5):
 	TweetClassifier.__init__(self, sc)
 	self.p_harassing = p
 
