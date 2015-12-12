@@ -11,12 +11,6 @@ class FileTweetStore(TweetStore):
    """
    Store tweets in files according to a policy.
    """
-   maxTweets = -1
-   maxSize = -1
-   nFiles = 0
-   pathPattern = None
-   file = None
-   _path = None
    _substRe = re.compile('(%\d*n)')
 
    B = 1
@@ -25,7 +19,7 @@ class FileTweetStore(TweetStore):
    GB = 1000 * MB
    TB = 1000 * GB
 
-   def __init__(self, serializer = None, pathPattern = "%Y-%m-%d/tweets-%05n", maxTweets = None, maxSize = None):
+   def __init__(self, serializer = None, pathPattern = "%Y-%m-%d/tweets-%05n", maxTweets = -1, maxSize = -1):
       """
       Set policy of how tweets are stored.
 
@@ -42,10 +36,11 @@ class FileTweetStore(TweetStore):
       """
       TweetStore.__init__(self, serializer)
       self.pathPattern = pathPattern
-      if maxTweets != None:
-         self.maxTweets = maxTweets
-      if maxSize != None:
-         self.maxSize = maxSize
+      self.nFiles = 0
+      self.file = None
+      self._path = None
+      self.maxTweets = maxTweets
+      self.maxSize = maxSize
       ReentrantMethod(self, self.close)
 
    def _substPctN(self, pat):
