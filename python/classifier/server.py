@@ -9,7 +9,7 @@ from classifier.key_word import KeywordTweetClassifier
 
 #c = RandomTweetClassifier(p = 0.01)
 c = KeywordTweetClassifier()
-server = SimpleXMLRPCServer(("localhost", 6666), allow_none=True)
+server = SimpleXMLRPCServer(('', 6666), allow_none=True)
 print("Listening on port 6666...")
 server.register_function(lambda txt: (print('checking: ' + txt), c.isHarassingTweet(txt))[1], "isHarassingTweet")
 server.register_function(lambda txt: (print('  adding: ' + txt), c.addHarassingTweet(txt))[1], "addHarassingTweet")
