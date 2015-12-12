@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys, os, argparse
 import json, re
 import xmlrpclib
@@ -9,6 +10,7 @@ from pyspark.streaming.kafka import KafkaUtils
 sys.path += [ os.getcwd() ]
 from classifier.rand import RandomTweetClassifier
 from classifier.key_word import KeywordTweetClassifier
+from classifier.remote import RemoteTweetClassifier
 from util.singleton import Singleton
 
 if __name__ == "__main__":
@@ -22,7 +24,7 @@ if __name__ == "__main__":
    args = p.parse_args()
 
    sc = SparkContext("local[2]", "block-harassers")
-   ssc = StreamingContext(sc, 10)
+   ssc = StreamingContext(sc, 5)
    ssc.checkpoint("file:///tmp/checkpointing")
 
    pp = pprint.PrettyPrinter(indent=4)
@@ -55,35 +57,42 @@ if __name__ == "__main__":
 
    c = Singleton.get('tweetClassifier', lambda: RandomTweetClassifier(p=0.01))
    #c = Singleton.get('tweetClassifier', lambda: KeywordTweetClassifier())
+   #c = Singleton.get('tweetClassifier', lambda: RemoteTweetClassifier('http://localhost:6666'))
+   #c = RandomTweetClassifier(p=1.0)
+   c = RemoteTweetClassifier('http://localhost:6666')
 
    tweets.count().pprint()
-   def isHarassingTweet(txt):
-      class px:
-         proxy = None
-         @classmethod
-         def p(self):
-            if self.proxy is None: self.proxy = xmlrpclib.ServerProxy("http://localhost:6666")
-            return self.proxy
-      return px.p().isHarassingTweet(txt)
+   #def isHarassingTweet(txt):
+      #class px:
+         #proxy = None
+         #@classmethod
+         #def p(self):
+            #if self.proxy is None: self.proxy = xmlrpclib.ServerProxy("http://localhost:6666", allow_none = True)
+            #return self.proxy
+      #return px.p().isHarassingTweet(txt)
 
+   #preprocess(tweets).filter(
+      #lambda t: isHarassingTweet(t[1])
+   #).pprint()
    preprocess(tweets).filter(
-      #lambda t: c.isHarassingTweet(t[1])
-      lambda t: isHarassingTweet(t[1])
+      lambda t: [ print("filtering - @%s: %s" % (t[0], t[1])), c.isHarassingTweet(t[1])][1]
    ).pprint()
 
    harassing_tweets.count().pprint()
-   #preprocess(harassing_tweets).foreachRDD(
-      #lambda rdd: rdd.foreach(lambda t: c.addHarassingTweet(t[1]))
-   #)
-   def addHarassingTweets(iter):
-       proxy = xmlrpclib.ServerProxy("http://localhost:6666/")
-       for t in iter:
-           proxy.addHarassingTweet(t[1])
-       proxy('close')()
+   #def addHarassingTweets(iter):
+       #proxy = xmlrpclib.ServerProxy("http://localhost:6666/")
+       #for t in iter:
+           #proxy.addHarassingTweet(t[1])
+       #proxy('close')()
 
+   #preprocess(harassing_tweets).foreachRDD(
+      #lambda rdd: rdd.foreachPartition(addHarassingTweets)
+   #)
    preprocess(harassing_tweets).foreachRDD(
-      lambda rdd: rdd.foreachPartition(addHarassingTweets)
+      lambda rdd: rdd.foreach(lambda t: [ print("   adding - @%s: %s" % (t[0], t[1])), c.addHarassingTweet(t[1])][1])
+                             #lambda t: [ print("filtering - @%s: %s" % (t[0], t[1])), c. isHarassingTweet(t[1])][1]
    )
+
 
    ssc.start()
    ssc.awaitTermination()
