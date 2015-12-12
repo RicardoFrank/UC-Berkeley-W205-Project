@@ -7,11 +7,6 @@ class KafkaTweetStore(TweetStore):
    """
    Store tweets in a Kafka log
    """
-   client = None
-   producer = None
-   topic = None
-   tweetsPerLine = None
-
 
    def __init__(self, serializer = None, endpoint = None, topic = None, tweetsPerLine = None):
       """
