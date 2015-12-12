@@ -6,6 +6,3 @@ function fatal {
     err "$*"
     exit 1
 }
-function usage {
-    fatal "--broker <zookeeper host>:<port>"
-}
