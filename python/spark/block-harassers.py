@@ -11,7 +11,6 @@ sys.path += [ os.getcwd() ]
 from classifier.rand import RandomTweetClassifier
 from classifier.key_word import KeywordTweetClassifier
 from classifier.remote import RemoteTweetClassifier
-from util.singleton import Singleton
 
 if __name__ == "__main__":
    p = argparse.ArgumentParser(
@@ -55,20 +54,16 @@ if __name__ == "__main__":
    tweets = KafkaUtils.createDirectStream(ssc, [ 'tweets' ], { "metadata.broker.list": args.bk_endpt })
    harassing_tweets = KafkaUtils.createDirectStream(ssc, [ 'harassing-tweets' ], { "metadata.broker.list": args.bk_endpt })
 
-   #c = Singleton.get('tweetClassifier', lambda: RandomTweetClassifier(p=0.01))
-   #c = Singleton.get('tweetClassifier', lambda: KeywordTweetClassifier())
-   #c = Singleton.get('tweetClassifier', lambda: RemoteTweetClassifier('http://localhost:6666'))
-   #c = RandomTweetClassifier(p=1.0)
    c = RemoteTweetClassifier('http://localhost:6666')
 
    tweets.count().pprint()
    preprocess(tweets).filter(
-      lambda t: [ print("filtering - @%s: %s" % (t[0], t[1])), c.isHarassingTweet(t[1])][1]
+      lambda t: c.isHarassingTweet(t[1])
    ).pprint()
 
    harassing_tweets.count().pprint()
    preprocess(harassing_tweets).foreachRDD(
-      lambda rdd: rdd.foreach(lambda t: [ print("   adding - @%s: %s" % (t[0], t[1])), c.addHarassingTweet(t[1])][1])
+      lambda rdd: rdd.foreach(lambda t: c.addHarassingTweet(t[1]))
    )
 
    ssc.start()

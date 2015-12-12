@@ -11,13 +11,13 @@ class RemoteTweetClassifier(TweetClassifier):
 	self.endpt = endpt
 
     def isHarassingTweet(self, txt):
-	print("checking:" + txt)
+	print("checking: " + txt)
 	if self.proxy is None:
 	    self.proxy = xmlrpclib.ServerProxy(self.endpt, allow_none = True)
         return self.proxy.isHarassingTweet(txt)
 
     def addHarassingTweet(self, txt):
-	print("adding:" + txt)
+	print("  adding: " + txt)
 	if self.proxy is None:
 	    self.proxy = xmlrpclib.ServerProxy(self.endpt, allow_none = True)
         self.proxy.addHarassingTweet(txt)
