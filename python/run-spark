@@ -1,20 +1,24 @@
 :
 . ./sh.fns
 function usage {
-    echo usage: $ME '[<kafka-broker endpoint>]'
+    echo usage: $ME '[[--broker] <kafka-broker endpoint>]'
 }
-if [ x"$1" = x-h -o x"$1" = x--help ] ; then
-    usage
-    exit 0
-fi
-BK=${1:-localhost:9092}
-case "$BK" in
-*:*)	;;
-*)	err malformed kafka broker: "$BK"
-	usage 1>&2
-	exit 1
-	;;
+
+BKPORT=9092
+BK=localhost
+case "$1" in
+-h|--help)	usage ; exit 0 ;;
+--broker)	BK="$2" ;;
+-*)		err unknown arg "$1" ; usage 1>&2 ; exit 1 ;;
+'')		;;
+*)		BK="$1" ;;
 esac
+
+if [[ "$BK" != *:* ]] ; then
+    BK="$BK:$BKPORT"
+    msg defaulting to kafka broker endpoint of "$BK"
+fi
+
 MASTER='local[2]' exec $SPARK_HOME/bin/spark-submit \
 	--jars $SPARK_HOME/external/kafka-assembly/target/spark-streaming-kafka-assembly_2.10-1.5.2.jar \
 	spark/block-harassers.py --broker $BK

@@ -1,0 +1,25 @@
+:
+. ./sh.fns
+
+function usage {
+    echo "usage: $ME [[--zookeeper] <zookeeper endpoint>]"
+}
+
+ZKPORT=2181
+ZK=localhost
+case "$1" in
+--help|-h)	usage ; exit 0 ;;
+--zookeeper)	ZK="$2" ;;
+-*)		err "unknown arg: $1" ; usage 1>&2 ; exit 1 ;;
+'')		;;
+*)		ZK="$1" ;;
+esac
+
+if [[ $ZK != *:* ]] ; then
+    ZK="$ZK:$ZKPORT"
+    msg defaulting to zookeeper endpoint of "$ZK"
+fi
+
+set -x
+set -e
+./make-topics $ZK
