@@ -3,7 +3,7 @@ from util.reentrantmethod import ReentrantMethod
 
 class TweetSerializer(object):
 
-   def __init__(self, store = None, to_json = staticmethod(lambda j: j)):
+   def __init__(self, store = None, to_json = (lambda j: j)):
       self.store = store
       self.ended = True
       self.first = None
