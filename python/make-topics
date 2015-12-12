@@ -27,7 +27,7 @@ if [[ "$ZK" != *:* ]] ; then
     err malformed zookeeper endpoint: "$ZK"
     exit 1
 fi
-KAFKA_OPTS=-Djava.net.preferIPv4Stack=true
+export KAFKA_OPTS=-Djava.net.preferIPv4Stack=true
 set -e
 assertopic tweets
 assertopic harassing-tweets
