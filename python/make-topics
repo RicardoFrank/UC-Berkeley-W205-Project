@@ -29,5 +29,6 @@ if [[ "$ZK" != *:* ]] ; then
 fi
 export KAFKA_OPTS=-Djava.net.preferIPv4Stack=true
 set -e
-assertopic tweets
-assertopic harassing-tweets
+assertopic tweets		# The tweet stream to check
+assertopic harassing-tweets	# Put tweets known to be harassing here
+assertopic harassers		# Read list of harassers and their tweets here
