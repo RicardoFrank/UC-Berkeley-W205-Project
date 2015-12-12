@@ -4,7 +4,7 @@
 
 # To run the first time
 
-All endpoints will default to localhost:*the-right-port*
+All endpoints will default to *localhost:the-right-port*
 
     $ export SPARK_HOME=
     $ export KAFKA_HOME=
