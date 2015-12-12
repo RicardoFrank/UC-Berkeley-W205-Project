@@ -44,10 +44,9 @@ if __name__ == '__main__':
 
    # Handle mutually exclusive arguments;
    # ideally, argparse could handle this...
-   # but it's argument groups that are
+   # but its argument groups that are
    # mutually exclusive, not individual
    # arguments, so...nope.
-   # is to use a file system store, y
    kafka = args.bk_endpt or args.topic
    file = args.pat or args.maxSize
    if kafka and file:
@@ -61,6 +60,8 @@ if __name__ == '__main__':
       args.pat = patDef
    if args.topic is None:
       args.topic = topicDef
+
+   print("adding tweets from @%s to topic '%s'" % (args.harasser, args.topic))
 
    # Bring in twitter creds; this file is *not*
    # in source code control; you've got to provide

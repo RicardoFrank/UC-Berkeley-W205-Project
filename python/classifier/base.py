@@ -14,9 +14,7 @@ class TweetClassifier(object):
 	pass
 
     def loadModel(self, path):
-	#model = self.sc.textFile(path)
 	pass
 
     def saveModel(self, path):
-	#model = self.sc.saveAsTextFile(path)
 	pass
