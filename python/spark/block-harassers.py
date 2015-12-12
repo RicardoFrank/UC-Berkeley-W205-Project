@@ -18,8 +18,9 @@ if __name__ == "__main__":
       , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
    p.add_argument('--broker', dest='bk_endpt', required=True, metavar='ENDPOINT'
 		  , help='broker endpoint for kafka store')
-   p.add_argument('--model-path', dest='modelPath', metavar='MODEL_PATH', default='file:///tmp/model'
-		  , help="path to read/store tweet classifier's model")
+   p.add_argument('--classifier', dest='cf_endpt', metavar='ENDPOINT'
+        , default='localhost:6666'
+		  , help="endpoint for remote classifier")
    args = p.parse_args()
 
    sc = SparkContext("local[2]", "block-harassers")
@@ -27,7 +28,7 @@ if __name__ == "__main__":
    ssc.checkpoint("file:///tmp/checkpointing")
 
    pp = pprint.PrettyPrinter(indent=4)
-   pp.pprint(args.bk_endpt)
+   pp.pprint(args)
 
    def preprocess(rdd):
       """
@@ -54,7 +55,7 @@ if __name__ == "__main__":
    tweets = KafkaUtils.createDirectStream(ssc, [ 'tweets' ], { "metadata.broker.list": args.bk_endpt })
    harassing_tweets = KafkaUtils.createDirectStream(ssc, [ 'harassing-tweets' ], { "metadata.broker.list": args.bk_endpt })
 
-   c = RemoteTweetClassifier('http://localhost:6666')
+   c = RemoteTweetClassifier(args.cf_endpt)
 
    tweets.count().pprint()
    preprocess(tweets).filter(
