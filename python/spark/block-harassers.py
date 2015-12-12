@@ -55,44 +55,21 @@ if __name__ == "__main__":
    tweets = KafkaUtils.createDirectStream(ssc, [ 'tweets' ], { "metadata.broker.list": args.bk_endpt })
    harassing_tweets = KafkaUtils.createDirectStream(ssc, [ 'harassing-tweets' ], { "metadata.broker.list": args.bk_endpt })
 
-   c = Singleton.get('tweetClassifier', lambda: RandomTweetClassifier(p=0.01))
+   #c = Singleton.get('tweetClassifier', lambda: RandomTweetClassifier(p=0.01))
    #c = Singleton.get('tweetClassifier', lambda: KeywordTweetClassifier())
    #c = Singleton.get('tweetClassifier', lambda: RemoteTweetClassifier('http://localhost:6666'))
    #c = RandomTweetClassifier(p=1.0)
    c = RemoteTweetClassifier('http://localhost:6666')
 
    tweets.count().pprint()
-   #def isHarassingTweet(txt):
-      #class px:
-         #proxy = None
-         #@classmethod
-         #def p(self):
-            #if self.proxy is None: self.proxy = xmlrpclib.ServerProxy("http://localhost:6666", allow_none = True)
-            #return self.proxy
-      #return px.p().isHarassingTweet(txt)
-
-   #preprocess(tweets).filter(
-      #lambda t: isHarassingTweet(t[1])
-   #).pprint()
    preprocess(tweets).filter(
       lambda t: [ print("filtering - @%s: %s" % (t[0], t[1])), c.isHarassingTweet(t[1])][1]
    ).pprint()
 
    harassing_tweets.count().pprint()
-   #def addHarassingTweets(iter):
-       #proxy = xmlrpclib.ServerProxy("http://localhost:6666/")
-       #for t in iter:
-           #proxy.addHarassingTweet(t[1])
-       #proxy('close')()
-
-   #preprocess(harassing_tweets).foreachRDD(
-      #lambda rdd: rdd.foreachPartition(addHarassingTweets)
-   #)
    preprocess(harassing_tweets).foreachRDD(
       lambda rdd: rdd.foreach(lambda t: [ print("   adding - @%s: %s" % (t[0], t[1])), c.addHarassingTweet(t[1])][1])
-                             #lambda t: [ print("filtering - @%s: %s" % (t[0], t[1])), c. isHarassingTweet(t[1])][1]
    )
-
 
    ssc.start()
    ssc.awaitTermination()
