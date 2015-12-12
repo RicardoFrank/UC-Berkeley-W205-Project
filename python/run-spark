@@ -1,13 +1,18 @@
 :
 . ./sh.fns
 function usage {
-    fatal usage: $ME '[<kafka-broker endpoint>]'
+    echo usage: $ME '[<kafka-broker endpoint>]'
 }
+if [ x"$1" = x-h -o x"$1" = x--help ] ; then
+    usage
+    exit 0
+fi
 BK=${1:-localhost:9092}
 case "$BK" in
 *:*)	;;
 *)	err malformed kafka broker: "$BK"
-	usage
+	usage 1>&2
+	exit 1
 	;;
 esac
 MASTER='local[2]' exec $SPARK_HOME/bin/spark-submit \

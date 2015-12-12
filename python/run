@@ -1,13 +1,18 @@
 :
 . ./sh.fns
 
+function usage {
+    echo "usage: $ME [--broker <kafka broker endpoint>] [--zookeeper <zookeeper endpoint>]"
+}
+
 BKENDPT=localhost:9092
 ZKENDPT=localhost:2181
 while : ; do
     case "$1" in
     --broker)		shift ; BKENDPT="$1" ;;
     --zookeeper)	shift ; ZKENDPT="$1" ;;
-    --*)		err "unknown arg: $1" ; usage ;;
+    --help|-h)		usage ; exit 0 ;;
+    -*)			err "unknown arg: $1" ; usage 1>&2 ; exit 1 ;;
     *)			break
     esac
     shift

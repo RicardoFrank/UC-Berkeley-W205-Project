@@ -1,6 +1,5 @@
 :
-set -e
-ZK="$1" ; shift
+. ./sh.fns
 function zk {
     $KAFKA_HOME/bin/kafka-topics.sh --zookeeper $ZK "$@"
 }
@@ -16,6 +15,19 @@ function mktopic {
 function assertopic {
     istopic $1 || mktopic $1
 }
+function usage {
+    echo usage: $ME '<zookeeper endpoint>'
+}
+if [ x"$1" = x ] ; then
+    usage 1>&2
+    exit 1
+fi
+ZK="$1"
+if [[ "$ZK" != *:* ]] ; then
+    err malformed zookeeper endpoint: "$ZK"
+    exit 1
+fi
 KAFKA_OPTS=-Djava.net.preferIPv4Stack=true
+set -e
 assertopic tweets
 assertopic harassing-tweets

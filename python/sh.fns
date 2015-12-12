@@ -1,6 +1,9 @@
 ME=$(basename $0)
+function msg {
+    echo $ME: "$*"
+}
 function err {
-    echo 1>&2 $ME: "$*"
+    msg 1>&2 "$*"
 }
 function fatal {
     err "$*"
