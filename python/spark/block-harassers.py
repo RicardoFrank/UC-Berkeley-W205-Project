@@ -40,13 +40,13 @@ if __name__ == "__main__":
          lambda tweet: 'lang' in tweet and tweet['lang'] == 'en'
       ).map(
       # pluck out tweet's text & downcase it
-         lambda tweet: tweet['text'].lower()
+         lambda tweet: (tweet['user']['screen_name'], tweet['text'].lower())
       ).map(
          # kill punctuation, except for @mentions and #hashtags and spaces
-         lambda txt: re.sub("[^\w\s@#]+", '', txt)
+         lambda t: (t[0], re.sub("[^\w\s@#]+", '', t[1]))
       ).map(
          # pprint() can only handle ascii, it seems
-         lambda txt: txt.encode('ascii','ignore')
+         lambda t: [ _.encode('ascii','ignore') for _ in t ]
       )
 
    tweets = KafkaUtils.createDirectStream(ssc, [ 'tweets' ], { "metadata.broker.list": args.bk_endpt })
@@ -57,12 +57,12 @@ if __name__ == "__main__":
 
    tweets.count().pprint()
    preprocess(tweets).filter(
-      lambda txt: c.isHarassingTweet(txt)
+      lambda t: c.isHarassingTweet(t[1])
    ).pprint()
 
    harassing_tweets.count().pprint()
    preprocess(harassing_tweets).foreachRDD(
-      lambda rdd: rdd.foreach(lambda txt: c.addHarassingTweet(txt))
+      lambda rdd: rdd.foreach(lambda t: c.addHarassingTweet(t[1]))
    )
 
    ssc.start()
