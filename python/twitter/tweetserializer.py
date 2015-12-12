@@ -2,14 +2,12 @@ import json
 from util.reentrantmethod import ReentrantMethod
 
 class TweetSerializer(object):
-   first = None
-   ended = None
-   store = None
    _to_json_obj = staticmethod(lambda j: j)
 
    def __init__(self, store = None, to_json = None):
       self.store = store
       self.ended = True
+      self.first = None
       ReentrantMethod(self, self.end)
       if to_json is not None:
          self._to_json_obj = to_json
