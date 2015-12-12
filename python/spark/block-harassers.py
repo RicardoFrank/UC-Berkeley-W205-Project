@@ -7,6 +7,7 @@ from pyspark.streaming.kafka import KafkaUtils
 
 sys.path += [ os.getcwd() ]
 from classifier.rand import RandomTweetClassifier
+from classifier.keyword import KeywordTweetClassifier
 from util.singleton import Singleton
 
 if __name__ == "__main__":
@@ -51,7 +52,8 @@ if __name__ == "__main__":
    tweets = KafkaUtils.createDirectStream(ssc, [ 'tweets' ], { "metadata.broker.list": args.bk_endpt })
    harassing_tweets = KafkaUtils.createDirectStream(ssc, [ 'harassing-tweets' ], { "metadata.broker.list": args.bk_endpt })
 
-   c = Singleton.get('tweetClassifier', lambda: RandomTweetClassifier(p=0.01))
+   #c = Singleton.get('tweetClassifier', lambda: RandomTweetClassifier(p=0.01))
+   c = Singleton.get('tweetClassifier', lambda: KeywordTweetClassifier())
 
    tweets.count().pprint()
    preprocess(tweets).filter(

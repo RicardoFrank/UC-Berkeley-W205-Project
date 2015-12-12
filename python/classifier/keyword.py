@@ -2,15 +2,28 @@ import random
 
 from classifier.base import TweetClassifier
 
-class RandomTweetClassifier(TweetClassifier):
-    p_harassing = 0.5
+class KeywordTweetClassifier(TweetClassifier):
+    model = {}
 
     def __init__(self, sc = None, p = 0.5):
 	TweetClassifier.__init__(self, sc)
-	self.p_harassing = p
 
     def isHarassingTweet(self, txt):
-    	return random.random() < self.p_harassing
+    	for s in txt.split():
+	    if s in self.model:
+		return True
+	return False
 
     def addHarassingTweet(self, txt):
+	for s in txt.split():
+	    self.model[s] = 1
+
+    def loadModel(self, textRDD = None):
 	pass
+	#self.model = {}
+	#for s in textRDD:
+	    #self.model[s] = 1
+
+    def saveModel(self, path):
+	pass
+
