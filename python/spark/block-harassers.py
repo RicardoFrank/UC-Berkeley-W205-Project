@@ -59,9 +59,9 @@ if __name__ == "__main__":
    ).pprint()
 
    harassing_tweets.count().pprint()
-   #preprocess(harassing_tweets).flatMap(
-      #lambda txt: c.addHarassingTweet(txt)
-   #).pprint()
+   preprocess(harassing_tweets).foreachRDD(
+      lambda rdd: rdd.foreach(lambda txt: c.addHarassingTweet(txt))
+   )
 
    ssc.start()
    ssc.awaitTermination()
