@@ -1,5 +1,6 @@
 import sys, os, argparse
 import json, re
+import xmlrpclib
 import pprint
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
@@ -56,13 +57,32 @@ if __name__ == "__main__":
    #c = Singleton.get('tweetClassifier', lambda: KeywordTweetClassifier())
 
    tweets.count().pprint()
+   def isHarassingTweet(txt):
+      class px:
+         proxy = None
+         @classmethod
+         def p(self):
+            if self.proxy is None: self.proxy = xmlrpclib.ServerProxy("http://localhost:6666")
+            return self.proxy
+      return px.p().isHarassingTweet(txt)
+
    preprocess(tweets).filter(
-      lambda t: c.isHarassingTweet(t[1])
+      #lambda t: c.isHarassingTweet(t[1])
+      lambda t: isHarassingTweet(t[1])
    ).pprint()
 
    harassing_tweets.count().pprint()
+   #preprocess(harassing_tweets).foreachRDD(
+      #lambda rdd: rdd.foreach(lambda t: c.addHarassingTweet(t[1]))
+   #)
+   def addHarassingTweets(iter):
+       proxy = xmlrpclib.ServerProxy("http://localhost:6666/")
+       for t in iter:
+           proxy.addHarassingTweet(t[1])
+       proxy('close')()
+
    preprocess(harassing_tweets).foreachRDD(
-      lambda rdd: rdd.foreach(lambda t: c.addHarassingTweet(t[1]))
+      lambda rdd: rdd.foreachPartition(addHarassingTweets)
    )
 
    ssc.start()
