@@ -7,11 +7,10 @@ class TweetWriter(tweepy.StreamListener):
    '''
    Write a stream of tweets using a serializer
    '''
-   write = None
-   stopped = False
 
    def __init__(self, serializer = None):
       self.write = serializer
+      self.stopped = False
 
    def on_data(self, data):
       if not self.stopped:

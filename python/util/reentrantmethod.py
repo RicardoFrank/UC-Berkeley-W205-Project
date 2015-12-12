@@ -3,8 +3,6 @@ class ReentrantMethod(object):
    Make a given object's method be re-entrant.
    """
 
-   orig_meth = None
-   obj = None
    def __init__(self, obj, meth):
       self.orig_meth = meth
       self.obj = obj

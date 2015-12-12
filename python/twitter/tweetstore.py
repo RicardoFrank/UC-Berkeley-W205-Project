@@ -10,16 +10,15 @@ class TweetStore(object):
    """
    Store tweets in files according to a policy.
    """
-   serializer = None
-   nTweets = 0
-   totTweets = 0
-   totBytes = 0
-   _closing = False
 
    def __init__(self, serializer = None):
       """
       """
       self.serializer = serializer
+      self.nTweets = 0
+      self.totTweets = 0
+      self.totBytes = 0
+      self._closing = False
       ReentrantMethod(self, self.close)
 
    def close(self):
