@@ -1,31 +1,33 @@
 # To install
 
-$ sudo sh install		# installs various python modules via pip
+    $ sudo sh install		# installs various python modules via pip
 
 # To run the first time
 
-All endpoints will default to localhost:<the right port>
+All endpoints will default to localhost:*the-right-port*
 
     $ export SPARK_HOME=
     $ export KAFKA_HOME=
     $ *start kafka and zookeeper*
-    $ ./run --zookeeper *zk endpoint* --broker *kafka broker endpoint*
+    $ ./run --zookeeper <zk endpoint> --broker <kafka broker endpoint>
 
 # To run subsequent times
 
+This will skip topic creation and starts quicker
+
     $ ./run-spark <zk endpoint>
 
-# To start pulling in tweets
+# To pump tweets into the spark topolgy via kafka
 
     $ python frontends/tweet-sucker.py --broker go-go-go.local:9092
 
-# To add an harassers tweets to the model
+# To add an harasser's tweets to the model
 
     $ python frontends/add-harasser.py --broker go-go-go.local:9092 closemindedjerk
 
 # To test the model interactively
 
-    $ <kill tweet-sucker if it's running>
+    $ *kill tweet-sucker if it's running*
     # Make @closemindedjerk's tweets appear in tweet stream
     $ python frontends/add-harasser.py --broker go-go-go.local:9092 closemindedjerk --topic tweets
     # Add @closemindedjerk as an harasser
