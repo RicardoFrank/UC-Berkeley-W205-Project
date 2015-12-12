@@ -26,9 +26,9 @@ class KeywordTweetClassifier(TweetClassifier):
 
     def addHarassingTweet(self, txt):
 	for s in txt.split():
+	    if not s in self.model:
+		print("%d adding '%s' to model" % (self.serno, s))
 	    self.model[s] = 1
-	print("%d model is now:\n\t %s"
-	      % (self.serno, "\n\t".join(self.model.keys())))
 
 
     def loadModel(self, textRDD = None):
