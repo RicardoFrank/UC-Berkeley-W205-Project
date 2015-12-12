@@ -8,10 +8,10 @@ BKPORT=9092
 BK=localhost
 case "$1" in
 -h|--help)	usage ; exit 0 ;;
---broker)	BK="$2" ;;
+--broker)	BK="$2" ; shift 2 ;;
 -*)		err unknown arg "$1" ; usage 1>&2 ; exit 1 ;;
 '')		;;
-*)		BK="$1" ;;
+*)		BK="$1" ; shift ;;
 esac
 
 if [[ "$BK" != *:* ]] ; then
@@ -21,4 +21,4 @@ fi
 
 MASTER='local[2]' exec $SPARK_HOME/bin/spark-submit \
 	--jars $SPARK_HOME/external/kafka-assembly/target/spark-streaming-kafka-assembly_2.10-1.5.2.jar \
-	spark/block-harassers.py --broker $BK
+	spark/block-harassers.py --broker $BK "$@"
