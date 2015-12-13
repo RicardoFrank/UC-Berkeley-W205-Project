@@ -6,12 +6,12 @@ import pprint
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
-from kafka import KafkaClient, SimpleProducer
 
 sys.path += [ os.getcwd() ]
 from classifier.rand import RandomTweetClassifier
 from classifier.key_word import KeywordTweetClassifier
 from classifier.remote import RemoteTweetClassifier
+from util.kafkatransceiver import KafkaTransceiver
 
 if __name__ == "__main__":
    p = argparse.ArgumentParser(
@@ -57,23 +57,13 @@ if __name__ == "__main__":
    harassing_tweets = KafkaUtils.createDirectStream(ssc, [ 'harassing-tweets' ], { "metadata.broker.list": args.bk_endpt })
 
    c = RemoteTweetClassifier(args.cf_endpt)
-
-   class KafkaSender:
-      client = None
-      producer = None
-      @classmethod
-      def send(self, t):
-         pp.pprint(t)
-         if self.client is None: self.client = KafkaClient(args.bk_endpt)
-         if self.producer is None: self.producer = SimpleProducer(self.client, async=True)
-         self.producer.send_messages('harassers', '{ "author": "%s", "text":, "%s" }' % (t[0], t[1]))
-         return t
+   k = KafkaTransceiver(args.bk_endpt)
 
    tweets.count().pprint()
    preprocess(tweets).filter(
       lambda t: c.isHarassingTweet(t[1])
    ).map(
-      lambda t: KafkaSender.send(t)
+      lambda t: (k.xmit('harassers', '{ "author": "%s", "text":, "%s" }' % (t[0], t[1])), t)[1]
    ).pprint()
 
    harassing_tweets.count().pprint()

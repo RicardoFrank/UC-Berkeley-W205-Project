@@ -1,5 +1,4 @@
 from __future__ import print_function
-#from kafka import KafkaClient, SimpleProducer
 import sys
 
 from twitter.tweetstore import TweetStore
@@ -14,8 +13,6 @@ class KafkaTweetStore(TweetStore):
       """
       """
       self.kafka = KafkaTransceiver(endpoint)
-      #self.client = KafkaClient(endpoint)
-      #self.producer = SimpleProducer(self.client, async=True)
       self.topic = topic
       self.tweetsPerLine = tweetsPerLine
       TweetStore.__init__(self, serializer)
@@ -66,6 +63,5 @@ class KafkaTweetStore(TweetStore):
       self.nTweets += 1
       self.totTweets += 1
       self.totBytes += len(tweet)
-      #self.producer.send_messages(self.topic, tweet)
       self.kafka.xmit(self.topic, tweet)
       self._logTweet()
