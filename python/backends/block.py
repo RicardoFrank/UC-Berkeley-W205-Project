@@ -36,6 +36,7 @@ if __name__ == '__main__':
 
    while True:
       m = k.recv(args.topic)
+      pp.pprint(m)
       m = json.loads(m)
       try:
          api.create_block(m['author'])
