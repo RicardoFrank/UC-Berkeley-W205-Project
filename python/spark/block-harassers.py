@@ -5,7 +5,7 @@ import xmlrpclib
 import pprint
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
-from pyspark.streaming.kafka import KafkaUtils
+from pyspark.streaming.kafka import KafkaUtils, TopicAndPartition
 
 sys.path += [ os.getcwd() ]
 from classifier.rand import RandomTweetClassifier
@@ -22,6 +22,8 @@ if __name__ == "__main__":
    p.add_argument('--classifier', dest='cf_endpt', metavar='ENDPOINT'
         , default='localhost:6666'
 		  , help="endpoint for remote classifier")
+   p.add_argument('--reload-harassment', dest='reload', action='store_true'
+		  , help="reload all harassing tweets, presumably to rebuild the classifier's model")
    args = p.parse_args()
 
    sc = SparkContext("local[2]", "block-harassers")
@@ -54,7 +56,11 @@ if __name__ == "__main__":
       )
 
    tweets = KafkaUtils.createDirectStream(ssc, [ 'tweets' ], { "metadata.broker.list": args.bk_endpt })
-   harassing_tweets = KafkaUtils.createDirectStream(ssc, [ 'harassing-tweets' ], { "metadata.broker.list": args.bk_endpt })
+
+   offset = None if not args.reload else { TopicAndPartition('harassing-tweets', 0): 0L }
+   harassing_tweets = KafkaUtils.createDirectStream(ssc, [ 'harassing-tweets' ]
+                                                    , { "metadata.broker.list": args.bk_endpt }
+                                                    , fromOffsets = offset)
 
    c = RemoteTweetClassifier(args.cf_endpt)
    k = KafkaTransceiver(args.bk_endpt)
