@@ -1,17 +1,27 @@
+Here's how to start and tinker with #douchetag.
+
+*NB*: when you've completed this run-through,
+the account tied to the twitter creds you
+enter will have a newly blocked twitter
+users.  You'll likely want to use either
+a throw-away account, or you'll want
+to immediately clean up that account's
+block list.
+
 # Pre-conditions
 
 0. The project repo must be cloned.
 1. `zookeeper` and `kafka` must be running.
 2. The `SPARK_HOME` and `KAFKA_HOME` envariables must be set appropriately.
 3. python 2.7 must be installed.
-4. Twitter app credentials must be known
+4. Twitter app credentials must be known.
 
 # To run
 
 You'll need to have 5 windows open:
 
-4. will run various command line utilities
-2. will run the spark job
+4. will run various command line utilities and interactive frontends
+2. will run the spark streaming job
 1. will run the classifier
 3. will run the tweet injector
 5. will run the blocker
@@ -41,7 +51,7 @@ We'll return to this window later.
 
 ## Start the Spark streaming job in a window
 
-If ZK and Kafka are running locally...
+If Zookeeper and Kafka are running locally...
 
     $ ./run-spark
 
@@ -49,11 +59,13 @@ If ZK and Kafka are running locally...
 
     $ ./run-spark --broker <kafka broker endpoint>
 
-The demo assumes all systems/daemons are running locally.
+The rest of this doc assumes all systems/daemons are running locally.
+All commands take some form of `--help` or `-h` to see arguments
+to point them at remote endpoints.
 
 ## Start the tweet classifier
 
-    $ python classifer/server.py        # binds to localhost:6666
+    $ python classifer/server.py        # binds to all interfaces on port 6666
 
 ## Start the tweet injector
 
@@ -92,7 +104,8 @@ Note the `--topic` switch.  That causes `add-harasser` to put @closemindedjerk's
 tweets into the kafka topic from which the Spark streaming job expects to
 receive tweets to check for harassment.
 
-Check the output in the 2nd window.  None of closemindedjerk's tweets were
+Check the output in the 2nd window. 
+You'll see that none of closemindedjerk's tweets were
 judged to be harassing.
 
 Now, add @closemindedjerk's tweets as harassment.
