@@ -40,8 +40,8 @@ if __name__ == '__main__':
       try:
          api.create_block(m['author'])
          print('@%s has blocked @%s for tweeting "%s"' % (me, m['author'], m['text']))
-      except:
-         print("Error blocking @%s: %s" % (m['author'], sys.exc_info()[0]))
+      except tweepy.TweepError as e:
+         print("Error blocking @%s: %s" % (m['author'], e.message[0]['message']))
    quit()
 
 
