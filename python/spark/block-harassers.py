@@ -43,7 +43,7 @@ if __name__ == "__main__":
          # english only
          lambda tweet: 'lang' in tweet and tweet['lang'] == 'en'
       ).map(
-      # pluck out tweet's text & downcase it
+         # pluck out tweet's auth & text & downcase tweet text
          lambda tweet: (tweet['user']['screen_name'], tweet['text'].lower())
       ).map(
          # kill punctuation, except for @mentions and #hashtags and spaces
