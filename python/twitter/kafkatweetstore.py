@@ -1,7 +1,9 @@
 from __future__ import print_function
-from kafka import KafkaClient, SimpleProducer
+#from kafka import KafkaClient, SimpleProducer
 import sys
+
 from twitter.tweetstore import TweetStore
+from util.kafkatransceiver import KafkaTransceiver
 
 class KafkaTweetStore(TweetStore):
    """
@@ -11,8 +13,9 @@ class KafkaTweetStore(TweetStore):
    def __init__(self, serializer = None, endpoint = None, topic = None, tweetsPerLine = None):
       """
       """
-      self.client = KafkaClient(endpoint)
-      self.producer = SimpleProducer(self.client, async=True)
+      self.kafka = KafkaTransceiver(endpoint)
+      #self.client = KafkaClient(endpoint)
+      #self.producer = SimpleProducer(self.client, async=True)
       self.topic = topic
       self.tweetsPerLine = tweetsPerLine
       TweetStore.__init__(self, serializer)
@@ -27,18 +30,18 @@ class KafkaTweetStore(TweetStore):
       """
       Close the store.
       """
-      if self.client is None:
+      if self.kafka is None:
          return
       self._closing = True
       self._logEol()
       self.serializer.closing()
-      self.client.close()
-      self.client = None
+      self.kafka.close()
+      self.kafka = None
       self.nTweets = 0
       self._closing = False
 
    def _logEol(self):
-      if self.client is not None:
+      if self.kafka is not None:
 	  self.message("%d tweets\n" % self.nTweets)
 
    def _logTweet(self):
@@ -63,5 +66,6 @@ class KafkaTweetStore(TweetStore):
       self.nTweets += 1
       self.totTweets += 1
       self.totBytes += len(tweet)
-      self.producer.send_messages(self.topic, tweet)
+      #self.producer.send_messages(self.topic, tweet)
+      self.kafka.xmit(self.topic, tweet)
       self._logTweet()
