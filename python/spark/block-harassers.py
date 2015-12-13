@@ -66,7 +66,7 @@ if __name__ == "__main__":
          pp.pprint(t)
          if self.client is None: self.client = KafkaClient(args.bk_endpt)
          if self.producer is None: self.producer = SimpleProducer(self.client, async=True)
-         self.producer.send_messages('harassers', '{ "author": "%s", "text", "%s" }' % (t[0], t[1]))
+         self.producer.send_messages('harassers', '{ "author": "%s", "text":, "%s" }' % (t[0], t[1]))
          return t
 
    tweets.count().pprint()
