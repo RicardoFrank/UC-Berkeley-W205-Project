@@ -30,12 +30,12 @@ When starting the apps, all endpoints will default to *localhost:the-right-port*
 
 In the first window, you'll first do some installation and setup:
 
-    $ sudo sh install		# installs various python modules via pip
-    $ ./setup			# creates kafka topics
+    $ sudo sh install           # installs various python modules via pip
+    $ ./setup                   # creates kafka topics
     $ cp creds.template creds.py
-    $ vi creds.py		# put in the twitter API credentials
-    				# NB: when you run the blocker,
-				# this user's block list will grow
+    $ vi creds.py               # put in the twitter API credentials
+                                # NB: when you run the blocker,
+                                # this user's block list will grow
 
 We'll return to this window later.
 
@@ -53,7 +53,7 @@ The demo assumes all systems/daemons are running locally.
 
 ## Start the tweet classifier
 
-    $ python classifer/server.py	# binds to localhost:6666
+    $ python classifer/server.py        # binds to localhost:6666
 
 ## Start the tweet injector
 
