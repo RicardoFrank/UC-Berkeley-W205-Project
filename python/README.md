@@ -1,21 +1,28 @@
 # Pre-conditions
 
+0. The project repo must be cloned.
 1. `zookeeper` and `kafka` must be running.
-2. The `SPARK_HOME` and `KAFKA_HOME` envariables must be set appropriately
-3. python 2.7 must be installed
+2. The `SPARK_HOME` and `KAFKA_HOME` envariables must be set appropriately.
+3. python 2.7 must be installed.
+4. Twitter app credentials must be known
 
 # To run
 
-You'll need to have 4 windows open:
+You'll need to have 5 windows open:
 
 4. will run various command line utilities
-1. will run the classifier
 2. will run the spark job
+1. will run the classifier
 3. will run the tweet injector
+5. will run the blocker
 
 In each of them, do
 
     $ cd .../W205-Project/python
+    $ export KAFKA_HOME=wherever-kafka-lives
+    $ export SPARK_HOME=wherever-spark-lives
+
+with the appropriate substitutions made.
 
 When starting the apps, all endpoints will default to *localhost:the-right-port*
 
@@ -25,12 +32,12 @@ In the first window, you'll first do some installation and setup:
 
     $ sudo sh install		# installs various python modules via pip
     $ ./setup			# creates kafka topics
+    $ cp creds.template creds.py
+    $ vi creds.py		# put in the twitter API credentials
+    				# NB: when you run the blocker,
+				# this user's block list will grow
 
-We'll return to this window later
-
-## Run the classifier
-
-    $ python classifer/server.py	# binds to localhost:6666
+We'll return to this window later.
 
 ## Start the Spark streaming job in a window
 
@@ -44,11 +51,19 @@ If ZK and Kafka are running locally...
 
 The demo assumes all systems/daemons are running locally.
 
-## Run the tweet injector in the last window
+## Start the tweet classifier
+
+    $ python classifer/server.py	# binds to localhost:6666
+
+## Start the tweet injector
 
     $ python frontends/tweet-sucker.py
 
-Once the injector is running, you'll see output from all the other windows.
+Once the injector is running, you'll see interesting output in all the other windows.
+
+## Finally, start the blocker
+
+    $ python backends/block.py
 
 ## To add an harasser's tweets to the model
 
@@ -58,33 +73,36 @@ From the first window
 
 This will add all of the datascience@berkeley tweets to the corpus of harassing tweets.
 Once this corpus is loaded, tweets similar to it will be marked as harassing
-and added to our block list.
+and added to the `creds.py` user's block list.
 
 # To test the model interactively
 
-Stop both the tweet injector and the classifer via ctl-C.
-
-Then, restart the classifier in the 
+Stop the classifer via ctl-C, then restart it:
 
     $ python classifer/server.py
 
 The classifier has no history across process invocations,
-so this will erase its corpus.
+so restarting it will erase its corpus.
 
 Now, inject a single user's tweets into the tweet stream:
 
     $ python frontends/add-harasser.py closemindedjerk --topic tweets
 
-Note the `--topic` switch.  That causes add-harasser to put @closemindedjerk's
-tweets into the kafka use in which the Spark streaming jobs expects to
+Note the `--topic` switch.  That causes `add-harasser` to put @closemindedjerk's
+tweets into the kafka topic from which the Spark streaming job expects to
 receive tweets to check for harassment.
 
-Check the output in the 3rd window.  You'll see lines showing none of the tweets as being harassment.
+Check the output in the 2nd window.  None of closemindedjerk's tweets were
+judged to be harassing.
 
-Now, add @closemindedjerk's tweets as harassment:
+Now, add @closemindedjerk's tweets as harassment.
+In the first window, do:
 
     $ python frontends/add-harasser.py closemindedjerk
 
 Then, re-check to see that @closemindedjerk's tweets are now considered harassment:
 
     $ python frontends/add-harasser.py closemindedjerk --topic tweets
+
+Finally, go check the `creds.py` user's twitter account.
+@closemindedjerk should now be blocked.
