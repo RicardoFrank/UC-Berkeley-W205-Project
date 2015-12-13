@@ -63,7 +63,7 @@ if __name__ == "__main__":
    preprocess(tweets).filter(
       lambda t: c.isHarassingTweet(t[1])
    ).map(
-      lambda t: (k.xmit('harassers', '{ "author": "%s", "text":, "%s" }' % (t[0], t[1])), t)[1]
+      lambda t: (k.xmit('harassers', '{ "author": "%s", "text": "%s" }' % (t[0], t[1])), t)[1]
    ).pprint()
 
    harassing_tweets.count().pprint()
