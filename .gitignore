@@ -10,5 +10,6 @@
 # Ignore dirs where tweets are written
 tweets
 harassers
+venv
 # Ignore credentials (don't want them in the repo for the world to see)
 creds.py
