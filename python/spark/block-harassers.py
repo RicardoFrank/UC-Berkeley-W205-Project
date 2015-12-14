@@ -2,6 +2,7 @@ from __future__ import print_function
 import sys, os, argparse
 import json, re
 import xmlrpclib
+import tweepy
 import pprint
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
@@ -20,11 +21,17 @@ if __name__ == "__main__":
    p.add_argument('--broker', dest='bk_endpt', required=True, metavar='ENDPOINT'
 		  , help='broker endpoint for kafka store')
    p.add_argument('--classifier', dest='cf_endpt', metavar='ENDPOINT'
-        , default='localhost:6666'
+        , default='http://localhost:6666'
 		  , help="endpoint for remote classifier")
    p.add_argument('--reload-harassment', dest='reload', action='store_true'
 		  , help="reload all harassing tweets, presumably to rebuild the classifier's model")
    args = p.parse_args()
+
+   execfile('./creds.py')
+   auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+   auth.set_access_token(access_token, access_token_secret)
+   api = tweepy.API(auth_handler=auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+   me = api.me().id_str
 
    sc = SparkContext("local[2]", "block-harassers")
    ssc = StreamingContext(sc, 5)
@@ -39,13 +46,19 @@ if __name__ == "__main__":
       suitable for use in the downstream topology
       """
       return rdd.map(
-         # xform to dicts
+         # xform json into dicts
          lambda js: json.loads(js[1])
+      ).filter(
+         # analyze only tweets from users (skip "delete" messages, eg)
+         lambda tweet: 'user' in tweet
+      ).filter(
+         # don't analyze our own tweets
+         lambda tweet: tweet['user']['id_str'] != me
       ).filter(
          # english only
          lambda tweet: 'lang' in tweet and tweet['lang'] == 'en'
       ).map(
-         # pluck out tweet's auth & text & downcase tweet text
+         # pluck out tweet's author & text & downcase tweet text
          lambda tweet: (tweet['user']['screen_name'], tweet['text'].lower())
       ).map(
          # kill punctuation, except for @mentions and #hashtags and spaces
