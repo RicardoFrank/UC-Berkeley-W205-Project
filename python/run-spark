@@ -1,18 +1,24 @@
 :
 . ./sh.fns
 function usage {
-    echo usage: $ME '[[--broker] <kafka-broker endpoint>]'
+    echo usage: $ME '[-h] [--spark-help] [[--broker] <kafka-broker endpoint>] [-- <spark job options>]'
 }
 
 BKPORT=9092
 BK=localhost
-case "$1" in
--h|--help)	usage ; exit 0 ;;
---broker)	BK="$2" ; shift 2 ;;
--*)		err unknown arg "$1" ; usage 1>&2 ; exit 1 ;;
-'')		;;
-*)		BK="$1" ; shift ;;
-esac
+while [[ $# -gt 0 ]] ; do
+    : "[$1]"
+    case "$1" in
+    -h|--help)	usage ; exit 0 ;;
+    --spark-help)
+		SPARK_HELP=--help ;;
+    --broker)	shift ; BK="$1" ;;
+    --)		echo shifting off -- ; shift ; break ;;
+    -*)		err unknown arg "$1" ; usage 1>&2 ; exit 1 ;;
+    *)		BK="$1" ;;
+    esac
+    shift
+done
 
 if [[ "$BK" != *:* ]] ; then
     BK="$BK:$BKPORT"
@@ -21,4 +27,4 @@ fi
 
 MASTER='local[2]' exec $SPARK_HOME/bin/spark-submit \
 	--jars $SPARK_HOME/external/kafka-assembly/target/spark-streaming-kafka-assembly_2.10-1.5.2.jar \
-	spark/block-harassers.py --broker $BK "$@"
+	spark/block-harassers.py $SPARK_HELP --broker $BK "$@"

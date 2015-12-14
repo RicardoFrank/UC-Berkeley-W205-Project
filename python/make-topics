@@ -22,10 +22,11 @@ if [ x"$1" = x ] ; then
     usage 1>&2
     exit 1
 fi
-ZK="$1"
+ZK="${1:-localhost}"
+ZKPORT=2181
 if [[ "$ZK" != *:* ]] ; then
-    err malformed zookeeper endpoint: "$ZK"
-    exit 1
+    ZK="$ZK:$ZKPORT"
+    msg defaulting to zookeeper endpoint of "$ZK"
 fi
 export KAFKA_OPTS=-Djava.net.preferIPv4Stack=true
 set -e
