@@ -1,4 +1,5 @@
 pip install kafka-python
+pip install pykafka
 pip install tweepy
 pip install gensim
 pip install psutil
