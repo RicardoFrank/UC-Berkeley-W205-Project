@@ -9,6 +9,7 @@ import argparse, pprint
 sys.path += [ os.getcwd() ]
 from twitter.filetweetstore import FileTweetStore
 from twitter.kafkatweetstore import KafkaTweetStore
+from twitter.nulltweetstore import NullTweetStore
 from util.reentrantmethod import ReentrantMethod
 from twitter.tweetwriter import TweetWriter
 from twitter.tweetserializer import TweetSerializer
@@ -45,10 +46,12 @@ if __name__ == '__main__':
                              , help='path name pattern to store tweets (default: {0})'.format(patDef.replace('%', '%%')))
    fargs.add_argument('--max-file-size', dest='maxSize', type=int
                                        , help='max bytes (more or less) written per tweet file')
+   nargs = p.add_argument_group('null', "'write' tweets into null store")
+   nargs.add_argument('--discard', action='store_true', help='discard tweets')
 
    args = p.parse_args()
    pp = pprint.PrettyPrinter(indent=4)
-   for x in [args, kargs, fargs]:
+   for x in [args, kargs, fargs, nargs]:
       pp.pprint(x)
 
    # Handle mutually exclusive arguments;
@@ -59,8 +62,9 @@ if __name__ == '__main__':
    # is to use a file system store, y
    kafka = args.bk_endpt or args.topic
    file = args.pat or args.maxSize
-   if kafka and file:
-      print("can't mix both Kafka log and file store options\n",
+   null = args.discard
+   if kafka and file or file and null or null and kafka:
+      print("can't mix tweet store options\n",
             p.format_usage(), file=sys.stderr)
       exit(1)
    # We're forced to handle defaults
@@ -87,6 +91,8 @@ if __name__ == '__main__':
    print("tweepy API created")
    if kafka:
       st = KafkaTweetStore(endpoint = args.bk_endpt[0], topic = args.topic, tweetsPerLine = args.maxTweets)
+   elif null:
+      st = NullTweetStore(tweetsPerLine = args.maxTweets)
    else:
       st = FileTweetStore(maxTweets = args.maxTweets, pathPattern=args.pat)
    print("tweet store created")
