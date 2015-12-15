@@ -1,0 +1,4 @@
+:
+. ./sh.fns
+
+exec python backends/blocker.py "$@"

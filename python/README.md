@@ -65,23 +65,23 @@ to point them at remote endpoints.
 
 ## Start the tweet classifier
 
-    $ python classifier/server.py        # binds to all interfaces on port 6666
+    $ ./run-classifier
 
 ## Start the tweet injector
 
-    $ python frontends/tweet-sucker.py
+    $ ./run-injector
 
 Once the injector is running, you'll see interesting output in all the other windows.
 
 ## Finally, start the blocker
 
-    $ python backends/block.py
+    $ ./run-blocker
 
 ## To add an harasser's tweets to the model
 
 From the first window
 
-    $ python frontends/add-harasser.py BerkeleyData --broker localhost
+    $ python frontends/add-harasser.py BerkeleyData
 
 This will add all of the datascience@berkeley tweets to the corpus of harassing tweets.
 Once this corpus is loaded, tweets similar to it will be marked as harassing
@@ -91,10 +91,11 @@ and added to the `creds.py` user's block list.
 
 Stop the classifer via ctl-C, then restart it:
 
-    $ python classifer/server.py
+    $ ./run-classifier --forget-harassment
 
-The classifier has no history across process invocations,
-so restarting it will erase its corpus.
+The classifier retains history across process invocations.
+For this test, we want it to forget what it has
+learned about harassing tweets.
 
 Now, inject a single user's tweets into the tweet stream:
 

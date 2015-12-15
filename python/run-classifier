@@ -1,4 +1,9 @@
 :
 . ./sh.fns
 
-exec python classifier/server.py
+if [[ $1 == '--forget-harassment' ]] ; then
+    rm -rf /tmp/lsi-tweet-classifier
+    shift
+fi
+
+exec python classifier/server.py "$@"

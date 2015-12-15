@@ -35,7 +35,9 @@ if __name__ == '__main__':
    p.add_argument('--max-tweets', dest='maxTweets', type=int, default=100
                                 , help='max tweets written per file or line')
    kargs = p.add_argument_group('kafka', 'write tweets into Kafka store')
-   kargs.add_argument('--broker', dest='bk_endpt', nargs=1, metavar='ENDPOINT'
+   portDef = '9092'
+   kargs.add_argument('--broker', dest='bk_endpt', nargs='?', metavar='ENDPOINT'
+                                , const='localhost:9092'
                                 , help='broker endpoint for kafka store')
    topicDef = 'tweets'
    kargs.add_argument('--topic', dest='topic'
@@ -49,10 +51,9 @@ if __name__ == '__main__':
    nargs = p.add_argument_group('null', "'write' tweets into null store")
    nargs.add_argument('--discard', action='store_true', help='discard tweets')
 
-   args = p.parse_args()
    pp = pprint.PrettyPrinter(indent=4)
-   for x in [args, kargs, fargs, nargs]:
-      pp.pprint(x)
+   args = p.parse_args()
+   pp.pprint(args)
 
    # Handle mutually exclusive arguments;
    # ideally, argparse could handle this...
@@ -90,7 +91,9 @@ if __name__ == '__main__':
    api = tweepy.API(auth_handler=auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
    print("tweepy API created")
    if kafka:
-      st = KafkaTweetStore(endpoint = args.bk_endpt[0], topic = args.topic, tweetsPerLine = args.maxTweets)
+      if ':' not in args.bk_endpt: args.bk_endpt += ':%s' % portDef
+      print('connecting to kafka broker @ ' + args.bk_endpt)
+      st = KafkaTweetStore(endpoint = args.bk_endpt, topic = args.topic, tweetsPerLine = args.maxTweets)
    elif null:
       st = NullTweetStore(tweetsPerLine = args.maxTweets)
    else:

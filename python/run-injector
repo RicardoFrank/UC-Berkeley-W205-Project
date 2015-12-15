@@ -1,0 +1,4 @@
+:
+. ./sh.fns
+
+exec python frontends/tweet-injector.py "$@"
