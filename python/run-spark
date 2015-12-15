@@ -1,7 +1,7 @@
 :
 . ./sh.fns
 function usage {
-    echo usage: $ME '[-h] [--spark-help] [[--broker] <kafka-broker endpoint>] [-- <spark job options>]'
+    echo usage: $ME '[-h] [--analyzer-help] [[--broker] <kafka-broker endpoint>] [-- <spark job options>]'
 }
 
 BKPORT=9092
@@ -10,8 +10,8 @@ while [[ $# -gt 0 ]] ; do
     : "[$1]"
     case "$1" in
     -h|--help)	usage ; exit 0 ;;
-    --spark-help)
-		SPARK_HELP=--help ;;
+    --analyzer-help)
+		ANALYZER_HELP=--help ;;
     --broker)	shift ; BK="$1" ;;
     --)		echo shifting off -- ; shift ; break ;;
     -*)		err unknown arg "$1" ; usage 1>&2 ; exit 1 ;;
@@ -27,4 +27,4 @@ fi
 
 MASTER='local[2]' exec $SPARK_HOME/bin/spark-submit \
 	--jars $SPARK_HOME/external/kafka-assembly/target/spark-streaming-kafka-assembly_2.10-1.5.2.jar \
-	spark/judge-tweets.py $SPARK_HELP --broker $BK "$@"
+	spark/tweet-analyzer.py $ANALYZER_HELP --broker $BK "$@"
