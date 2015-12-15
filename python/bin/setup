@@ -22,4 +22,4 @@ fi
 
 set -x
 set -e
-./make-topics $ZK
+bin/make-topics $ZK
