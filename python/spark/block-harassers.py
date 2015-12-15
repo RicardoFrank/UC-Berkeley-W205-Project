@@ -90,7 +90,12 @@ if __name__ == "__main__":
    ).pprint()
 
    harassing_tweets.count().pprint()
-   preprocess(harassing_tweets).foreachRDD(
+   preprocess(harassing_tweets).map(
+         # the classifier looks at tweets as bag of word documents,
+         # and it doesn't like to update its corpus with documents
+         # it already knows about; sorting the words lets it uniquify
+         lambda t: (t[0], t[1], ' '.join(sorted(t[1].split())))
+   ).foreachRDD(
       lambda rdd: rdd.foreach(lambda t: (pp.pprint(t), c.addHarassingTweet(t[2])))
    )
 
