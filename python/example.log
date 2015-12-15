@@ -1,0 +1,122 @@
+INFO:gensim.corpora.dictionary:adding document #0 to Dictionary(0 unique tokens: [])
+INFO:gensim.corpora.dictionary:built Dictionary(9 unique tokens: [u'eye', u'takes', u'hes', u'stubs', u'matty']...) from 1 documents (total 9 corpus positions)
+INFO:gensim.corpora.dictionary:adding document #0 to Dictionary(0 unique tokens: [])
+INFO:gensim.corpora.dictionary:built Dictionary(9 unique tokens: [u'eye', u'takes', u'hes', u'stubs', u'matty']...) from 1 documents (total 9 corpus positions)
+INFO:gensim.corpora.dictionary:adding document #0 to Dictionary(0 unique tokens: [])
+INFO:gensim.corpora.dictionary:built Dictionary(9 unique tokens: [u'eye', u'takes', u'hes', u'stubs', u'matty']...) from 1 documents (total 9 corpus positions)
+INFO:gensim.corpora.dictionary:saving dictionary mapping to Dictionary(9 unique tokens: [u'eye', u'takes', u'hes', u'stubs', u'matty']...)
+INFO:gensim.corpora.dictionary:saving dictionary mapping to Dictionary(9 unique tokens: [u'eye', u'takes', u'hes', u'stubs', u'matty']...)
+INFO:gensim.corpora.dictionary:adding document #0 to Dictionary(0 unique tokens: [])
+INFO:gensim.corpora.dictionary:built Dictionary(9 unique tokens: [u'eye', u'takes', u'hes', u'stubs', u'matty']...) from 1 documents (total 9 corpus positions)
+INFO:gensim.corpora.dictionary:saving dictionary mapping to /tmp/singletweet.txt
+INFO:gensim.corpora.dictionary:adding document #0 to Dictionary(0 unique tokens: [])
+INFO:gensim.corpora.dictionary:built Dictionary(9 unique tokens: [u'eye', u'takes', u'hes', u'stubs', u'matty']...) from 1 documents (total 9 corpus positions)
+INFO:gensim.utils:saving Dictionary object under /tmp/singletweet, separately None
+INFO:gensim.utils:loading Dictionary object from /tmp/singletweet
+INFO:gensim.models.ldamodel:using symmetric alpha at 0.1
+INFO:gensim.models.ldamodel:using symmetric eta at 0.1
+INFO:gensim.models.ldamodel:using serial LDA version on this node
+INFO:gensim.corpora.dictionary:adding document #0 to Dictionary(0 unique tokens: [])
+INFO:gensim.corpora.dictionary:built Dictionary(6 unique tokens: [u'nae', u'gum', u'chewing', u'oops', u'swallowed']...) from 1 documents (total 6 corpus positions)
+INFO:gensim.utils:saving Dictionary object under /tmp/singletweet, separately None
+INFO:gensim.models.ldamodel:running online LDA training, 10 topics, 10 passes over the supplied corpus of 1 documents, updating model once every 1 documents, evaluating perplexity every 1 documents, iterating 50x with a convergence threshold of 0.001000
+DEBUG:gensim.models.ldamodel:bound: at document #0
+INFO:gensim.models.ldamodel:-15.062 per-word bound, 34198.5 perplexity estimate based on a held-out corpus of 1 documents with 6 words
+INFO:gensim.models.ldamodel:PROGRESS: pass 0, at document #1/1
+DEBUG:gensim.models.ldamodel:updating topics
+INFO:gensim.models.ldamodel:topic #1 (0.100): 0.111*stubs + 0.111*healy + 0.111*eye + 0.111*matty + 0.111*hes + 0.111*takes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #7 (0.100): 0.111*takes + 0.111*stubs + 0.111*healy + 0.111*matty + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #9 (0.100): 0.159*hes + 0.159*eye + 0.159*matty + 0.159*healy + 0.159*takes + 0.159*stubs + 0.014*smoking + 0.014*fag + 0.014*hope
+INFO:gensim.models.ldamodel:topic #5 (0.100): 0.111*stubs + 0.111*takes + 0.111*eye + 0.111*healy + 0.111*matty + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #6 (0.100): 0.111*stubs + 0.111*eye + 0.111*healy + 0.111*takes + 0.111*hes + 0.111*matty + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic diff=6.594290, rho=1.000000
+DEBUG:gensim.models.ldamodel:bound: at document #0
+INFO:gensim.models.ldamodel:-0.359 per-word bound, 1.3 perplexity estimate based on a held-out corpus of 1 documents with 6 words
+INFO:gensim.models.ldamodel:PROGRESS: pass 1, at document #1/1
+DEBUG:gensim.models.ldamodel:updating topics
+INFO:gensim.models.ldamodel:topic #2 (0.100): 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*matty + 0.111*healy + 0.111*takes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #4 (0.100): 0.111*takes + 0.111*matty + 0.111*healy + 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #5 (0.100): 0.111*stubs + 0.111*takes + 0.111*eye + 0.111*healy + 0.111*matty + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #8 (0.100): 0.111*stubs + 0.111*takes + 0.111*healy + 0.111*matty + 0.111*hes + 0.111*eye + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #0 (0.100): 0.111*takes + 0.111*healy + 0.111*matty + 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic diff=0.000180, rho=0.577350
+DEBUG:gensim.models.ldamodel:bound: at document #0
+INFO:gensim.models.ldamodel:-0.359 per-word bound, 1.3 perplexity estimate based on a held-out corpus of 1 documents with 6 words
+INFO:gensim.models.ldamodel:PROGRESS: pass 2, at document #1/1
+DEBUG:gensim.models.ldamodel:updating topics
+INFO:gensim.models.ldamodel:topic #3 (0.100): 0.111*stubs + 0.111*takes + 0.111*healy + 0.111*hes + 0.111*matty + 0.111*eye + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #9 (0.100): 0.159*hes + 0.159*eye + 0.159*matty + 0.159*healy + 0.159*takes + 0.159*stubs + 0.014*smoking + 0.014*fag + 0.014*hope
+INFO:gensim.models.ldamodel:topic #0 (0.100): 0.111*takes + 0.111*healy + 0.111*matty + 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #5 (0.100): 0.111*stubs + 0.111*takes + 0.111*eye + 0.111*healy + 0.111*matty + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #1 (0.100): 0.111*stubs + 0.111*healy + 0.111*eye + 0.111*matty + 0.111*hes + 0.111*takes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic diff=0.000066, rho=0.500000
+DEBUG:gensim.models.ldamodel:bound: at document #0
+INFO:gensim.models.ldamodel:-0.359 per-word bound, 1.3 perplexity estimate based on a held-out corpus of 1 documents with 6 words
+INFO:gensim.models.ldamodel:PROGRESS: pass 3, at document #1/1
+DEBUG:gensim.models.ldamodel:updating topics
+INFO:gensim.models.ldamodel:topic #6 (0.100): 0.111*stubs + 0.111*eye + 0.111*healy + 0.111*takes + 0.111*hes + 0.111*matty + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #9 (0.100): 0.159*hes + 0.159*eye + 0.159*matty + 0.159*healy + 0.159*takes + 0.159*stubs + 0.014*smoking + 0.014*fag + 0.014*hope
+INFO:gensim.models.ldamodel:topic #4 (0.100): 0.111*takes + 0.111*matty + 0.111*healy + 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #7 (0.100): 0.111*takes + 0.111*stubs + 0.111*healy + 0.111*matty + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #8 (0.100): 0.111*stubs + 0.111*takes + 0.111*healy + 0.111*matty + 0.111*hes + 0.111*eye + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic diff=0.000029, rho=0.447214
+DEBUG:gensim.models.ldamodel:bound: at document #0
+INFO:gensim.models.ldamodel:-0.359 per-word bound, 1.3 perplexity estimate based on a held-out corpus of 1 documents with 6 words
+INFO:gensim.models.ldamodel:PROGRESS: pass 4, at document #1/1
+DEBUG:gensim.models.ldamodel:updating topics
+INFO:gensim.models.ldamodel:topic #2 (0.100): 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*matty + 0.111*healy + 0.111*takes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #7 (0.100): 0.111*takes + 0.111*stubs + 0.111*healy + 0.111*matty + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #9 (0.100): 0.159*hes + 0.159*eye + 0.159*matty + 0.159*healy + 0.159*takes + 0.159*stubs + 0.014*smoking + 0.014*fag + 0.014*hope
+INFO:gensim.models.ldamodel:topic #0 (0.100): 0.111*takes + 0.111*healy + 0.111*matty + 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #3 (0.100): 0.111*stubs + 0.111*takes + 0.111*healy + 0.111*hes + 0.111*matty + 0.111*eye + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic diff=0.000015, rho=0.408248
+DEBUG:gensim.models.ldamodel:bound: at document #0
+INFO:gensim.models.ldamodel:-0.359 per-word bound, 1.3 perplexity estimate based on a held-out corpus of 1 documents with 6 words
+INFO:gensim.models.ldamodel:PROGRESS: pass 5, at document #1/1
+DEBUG:gensim.models.ldamodel:updating topics
+INFO:gensim.models.ldamodel:topic #7 (0.100): 0.111*takes + 0.111*stubs + 0.111*healy + 0.111*matty + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #1 (0.100): 0.111*stubs + 0.111*healy + 0.111*eye + 0.111*matty + 0.111*hes + 0.111*takes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #6 (0.100): 0.111*stubs + 0.111*eye + 0.111*healy + 0.111*takes + 0.111*hes + 0.111*matty + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #0 (0.100): 0.111*takes + 0.111*healy + 0.111*matty + 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #3 (0.100): 0.111*stubs + 0.111*takes + 0.111*healy + 0.111*hes + 0.111*matty + 0.111*eye + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic diff=0.000008, rho=0.377964
+DEBUG:gensim.models.ldamodel:bound: at document #0
+INFO:gensim.models.ldamodel:-0.359 per-word bound, 1.3 perplexity estimate based on a held-out corpus of 1 documents with 6 words
+INFO:gensim.models.ldamodel:PROGRESS: pass 6, at document #1/1
+DEBUG:gensim.models.ldamodel:updating topics
+INFO:gensim.models.ldamodel:topic #4 (0.100): 0.111*takes + 0.111*matty + 0.111*healy + 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #1 (0.100): 0.111*stubs + 0.111*healy + 0.111*eye + 0.111*matty + 0.111*hes + 0.111*takes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #6 (0.100): 0.111*stubs + 0.111*eye + 0.111*healy + 0.111*takes + 0.111*hes + 0.111*matty + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #5 (0.100): 0.111*stubs + 0.111*takes + 0.111*eye + 0.111*healy + 0.111*matty + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #2 (0.100): 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*matty + 0.111*healy + 0.111*takes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic diff=0.000005, rho=0.353553
+DEBUG:gensim.models.ldamodel:bound: at document #0
+INFO:gensim.models.ldamodel:-0.359 per-word bound, 1.3 perplexity estimate based on a held-out corpus of 1 documents with 6 words
+INFO:gensim.models.ldamodel:PROGRESS: pass 7, at document #1/1
+DEBUG:gensim.models.ldamodel:updating topics
+INFO:gensim.models.ldamodel:topic #1 (0.100): 0.111*stubs + 0.111*healy + 0.111*eye + 0.111*matty + 0.111*hes + 0.111*takes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #9 (0.100): 0.159*hes + 0.159*eye + 0.159*matty + 0.159*healy + 0.159*takes + 0.159*stubs + 0.014*smoking + 0.014*fag + 0.014*hope
+INFO:gensim.models.ldamodel:topic #8 (0.100): 0.111*stubs + 0.111*takes + 0.111*healy + 0.111*matty + 0.111*hes + 0.111*eye + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #3 (0.100): 0.111*stubs + 0.111*takes + 0.111*healy + 0.111*hes + 0.111*matty + 0.111*eye + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #4 (0.100): 0.111*takes + 0.111*matty + 0.111*healy + 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic diff=0.000003, rho=0.333333
+DEBUG:gensim.models.ldamodel:bound: at document #0
+INFO:gensim.models.ldamodel:-0.359 per-word bound, 1.3 perplexity estimate based on a held-out corpus of 1 documents with 6 words
+INFO:gensim.models.ldamodel:PROGRESS: pass 8, at document #1/1
+DEBUG:gensim.models.ldamodel:updating topics
+INFO:gensim.models.ldamodel:topic #0 (0.100): 0.111*takes + 0.111*healy + 0.111*matty + 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #9 (0.100): 0.159*hes + 0.159*eye + 0.159*matty + 0.159*healy + 0.159*takes + 0.159*stubs + 0.014*smoking + 0.014*fag + 0.014*hope
+INFO:gensim.models.ldamodel:topic #7 (0.100): 0.111*takes + 0.111*stubs + 0.111*healy + 0.111*matty + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #6 (0.100): 0.111*stubs + 0.111*eye + 0.111*healy + 0.111*takes + 0.111*hes + 0.111*matty + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #5 (0.100): 0.111*stubs + 0.111*takes + 0.111*eye + 0.111*healy + 0.111*matty + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic diff=0.000002, rho=0.316228
+DEBUG:gensim.models.ldamodel:bound: at document #0
+INFO:gensim.models.ldamodel:-0.359 per-word bound, 1.3 perplexity estimate based on a held-out corpus of 1 documents with 6 words
+INFO:gensim.models.ldamodel:PROGRESS: pass 9, at document #1/1
+DEBUG:gensim.models.ldamodel:updating topics
+INFO:gensim.models.ldamodel:topic #2 (0.100): 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*matty + 0.111*healy + 0.111*takes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #8 (0.100): 0.111*stubs + 0.111*takes + 0.111*healy + 0.111*matty + 0.111*hes + 0.111*eye + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #4 (0.100): 0.111*takes + 0.111*matty + 0.111*healy + 0.111*stubs + 0.111*eye + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #5 (0.100): 0.111*stubs + 0.111*takes + 0.111*eye + 0.111*healy + 0.111*matty + 0.111*hes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic #1 (0.100): 0.111*stubs + 0.111*healy + 0.111*eye + 0.111*matty + 0.111*hes + 0.111*takes + 0.111*smoking + 0.111*fag + 0.111*hope
+INFO:gensim.models.ldamodel:topic diff=0.000001, rho=0.301511
