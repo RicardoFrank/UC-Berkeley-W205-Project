@@ -8,8 +8,8 @@ from classifier.base import TweetClassifier
 
 class LSITweetClassifier(TweetClassifier):
     nInstances = 0
-    
-    def __init__(self, tolerance = 0.4, sc = None):
+
+    def __init__(self, tolerance = 0.85, n_matches_for_harassment = 10, sc = None):
         print('INITIALIZING ' + type(self).__name__)
 	self.nInstances += 1
         self.serno = self.nInstances
@@ -17,6 +17,7 @@ class LSITweetClassifier(TweetClassifier):
 	self.harassment = {}
 	self.model = None
 	self.tolerance = tolerance
+	self.n_matches = n_matches_for_harassment
 	self.first = []
 	self.initial_corpus_len = 10
         pass
@@ -28,8 +29,7 @@ class LSITweetClassifier(TweetClassifier):
 	self.docid += 1
 	return {
 	    'id': 'doc #%d' % self.docid
-	    #, 'tokens': list(gensim.utils.tokenize(txt))
-	    , 'tokens': gensim.utils.simple_preprocess(txt)
+	    , 'tokens': list(gensim.utils.tokenize(txt))
 	}
 
     def isHarassingTweet(self, txt):
@@ -38,7 +38,7 @@ class LSITweetClassifier(TweetClassifier):
 	    return False
 
 	sims = self.model.find_similar(self._doc(txt), min_score=self.tolerance, max_results=1)
-	harassing = len(sims) > 0
+	harassing = len(sims) >= self.n_matches
         if harassing:
             print ("    HARASSING tweet '" + txt + "'")
         return harassing
