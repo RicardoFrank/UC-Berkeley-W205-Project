@@ -1,0 +1,10 @@
+:
+. ./sh.fns
+
+[[ $ME == inject-tweets ]] &&
+    set -- --topic tweets "$@"
+
+# add harasser does it all; changing the topic
+# tells you whether you're injected harassing tweets
+# or just tweets to analyze
+exec python frontends/add-harasser.py "$@"

@@ -81,7 +81,7 @@ Once the injector is running, you'll see interesting output in all the other win
 
 From the first window
 
-    $ python frontends/add-harasser.py BerkeleyData
+    $ bin/add-harasser @BerkeleyData
 
 This will add all of the datascience@berkeley tweets to the corpus of harassing tweets.
 Once this corpus is loaded, tweets similar to it will be marked as harassing
@@ -99,11 +99,10 @@ learned about harassing tweets.
 
 Now, inject a single user's tweets into the tweet stream:
 
-    $ python frontends/add-harasser.py closemindedjerk --topic tweets --broker localhost
+    $ bin/inject-tweets @closemindedjerk
 
-Note the `--topic` switch.  That causes `add-harasser` to put @closemindedjerk's
-tweets into the kafka topic from which the Spark streaming job expects to
-receive tweets to check for harassment.
+This does the job of the tweet-injector, but for only a single
+users tweets.
 
 Check the output in the 2nd window. 
 You'll see that none of closemindedjerk's tweets were
@@ -112,11 +111,11 @@ judged to be harassing.
 Now, add @closemindedjerk's tweets as harassment.
 In the first window, do:
 
-    $ python frontends/add-harasser.py closemindedjerk --broker localhost
+    $ bin/add-harassment @closemindedjerk
 
-Then, re-check to see that @closemindedjerk's tweets are now considered harassment:
+Then, re-inject @closeminded jerk's tweets to see that they are now considered harassment:
 
-    $ python frontends/add-harasser.py closemindedjerk --topic tweets
+    $ bin/inject-tweets @closemindedjerk
 
 Finally, go check the `creds.py` user's twitter account.
 @closemindedjerk should now be blocked.
