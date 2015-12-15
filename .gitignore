@@ -12,6 +12,7 @@
 # Ignore dirs where tweets are written
 tweets
 harassers
+harassment
 # Ignore Python virtual environments
 venv
 # Ignore local modifications

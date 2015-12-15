@@ -5,6 +5,7 @@ import re
 import tweepy, json
 import traceback
 import argparse, pprint
+import re
 
 sys.path += [ os.getcwd() ]
 from util.reentrantmethod import ReentrantMethod
@@ -22,19 +23,20 @@ if __name__ == '__main__':
    p = argparse.ArgumentParser(
       description='Suck filtered tweets from twitter and write them into a store'
       , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-   p.add_argument('harasser', help='screen name of harasser')
+   p.add_argument('harassment', help='screen name of @harasser or a tweet id or a tweet URI')
    p.add_argument('--ntweets', dest='nTweets', type=int, default=1000
                                , help='number of recent tweets written by harasser to publish')
    p.add_argument('--max-tweets', dest='maxTweets', type=int, default=100
                                 , help='max tweets written per file or line')
    kargs = p.add_argument_group('kafka', 'write tweets into Kafka store')
-   kargs.add_argument('--broker', dest='bk_endpt', nargs=1, metavar='ENDPOINT'
+   portDef = 9092
+   kargs.add_argument('--broker', dest='bk_endpt', nargs='?', const='localhost:9092', metavar='ENDPOINT'
                                 , help='broker endpoint for kafka store')
    topicDef = 'harassing-tweets'
    kargs.add_argument('--topic', dest='topic'
                                , help='Kafka topic to which tweets are written (default: {0})'.format(topicDef))
    fargs = p.add_argument_group('file', 'write tweets into a file system store')
-   patDef = 'harassers/%Y-%m-%d/%05n'
+   patDef = 'harassment/%Y-%m-%d/%05n'
    fargs.add_argument('--pat', dest='pat'
                              , help='path name pattern to store tweets (default: {0})'.format(patDef.replace('%', '%%')))
    fargs.add_argument('--max-file-size', dest='maxSize', type=int
@@ -61,8 +63,6 @@ if __name__ == '__main__':
    if args.topic is None:
       args.topic = topicDef
 
-   print("adding tweets from @%s to topic '%s'" % (args.harasser, args.topic))
-
    # Bring in twitter creds; this file is *not*
    # in source code control; you've got to provide
    # it yourself
@@ -78,7 +78,8 @@ if __name__ == '__main__':
    api = tweepy.API(auth_handler=auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
    print("tweepy API created")
    if kafka:
-      st = KafkaTweetStore(endpoint = args.bk_endpt[0], topic = args.topic, tweetsPerLine = args.maxTweets)
+      if ':' not in args.bk_endpt: args.bk_endpt += ':%s' % portDef
+      st = KafkaTweetStore(endpoint = args.bk_endpt, topic = args.topic, tweetsPerLine = args.maxTweets)
    else:
       st = FileTweetStore(maxTweets = args.maxTweets, pathPattern=args.pat)
    print("tweet store created")
@@ -86,8 +87,33 @@ if __name__ == '__main__':
    st.serializer = s
    w = TweetWriter(s.write)
 
+   # Determine what to add as harassment
+   harasser = None
+   harassing_tweet = None
+   if args.harassment.startswith('@'):
+      # A screen name
+      harasser = args.harassment[1:]
+   elif re.match('^http(s?)://twitter\.com/[^/]+/status/\d+$', args.harassment):
+      # A URI to a tweet
+      harassing_tweet = re.sub('.*/', '', args.harassment)
+   elif re.match('^\d+$', args.harassment):
+      # A tweet ID
+      harassing_tweet = args.harassment
+   else:
+      # Default to a screen name
+      harasser = args.harassment
+
+   if harassing_tweet is not None:
+      print("adding tweet id %s to topic '%s'" % (harassing_tweet, args.topic))
+      def onetweet(id):
+         yield api.get_status(id)
+      iter = lambda: onetweet(harassing_tweet)
+   else:
+      print("adding tweets from @%s to topic '%s'" % (harasser, args.topic))
+      iter = tweepy.Cursor(api.user_timeline,screen_name=harasser, count=args.nTweets).items
+
    try:
-      for tweet in tweepy.Cursor(api.user_timeline,screen_name=args.harasser, count=args.nTweets).items():
+      for tweet in iter():
          w.on_data(tweet._json)
    except KeyboardInterrupt:
       pass
