@@ -2,4 +2,5 @@ pip install kafka-python
 pip install pykafka
 pip install tweepy
 pip install gensim
+pip install simserver
 pip install psutil
