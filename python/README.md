@@ -41,7 +41,7 @@ When starting the apps, all endpoints will default to *localhost:the-right-port*
 In the first window, you'll first do some installation and setup:
 
     $ sudo sh install           # installs various python modules via pip
-    $ ./setup                   # creates kafka topics
+    $ bin/setup                 # creates kafka topics
     $ cp creds.template creds.py
     $ vi creds.py               # put in the twitter API credentials
                                 # NB: when you run the blocker,
@@ -53,11 +53,11 @@ We'll return to this window later.
 
 If Zookeeper and Kafka are running locally...
 
-    $ ./run-spark
+    $ bin/run-spark
 
 ...or this if they are on remote systems
 
-    $ ./run-spark --broker <kafka broker endpoint>
+    $ bin/run-spark --broker <kafka broker endpoint>
 
 The rest of this doc assumes all systems/daemons are running locally.
 All commands take some form of `--help` or `-h` to see arguments
@@ -65,17 +65,17 @@ to point them at remote endpoints.
 
 ## Start the tweet classifier
 
-    $ ./run-classifier
+    $ bin/run-classifier
 
 ## Start the tweet injector
 
-    $ ./run-injector
+    $ bin/run-injector
 
 Once the injector is running, you'll see interesting output in all the other windows.
 
 ## Finally, start the blocker
 
-    $ ./run-blocker
+    $ bin/run-blocker
 
 ## To add an harasser's tweets to the model
 
@@ -91,7 +91,7 @@ and added to the `creds.py` user's block list.
 
 Stop the classifer via ctl-C, then restart it:
 
-    $ ./run-classifier --forget-harassment
+    $ bin/run-classifier --forget-harassment
 
 The classifier retains history across process invocations.
 For this test, we want it to forget what it has
