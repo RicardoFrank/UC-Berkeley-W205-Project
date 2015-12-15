@@ -1,11 +1,10 @@
-import random
-import os
-import logging, gensim, bz2
-logging.basicConfig(filename='example.log',level=logging.DEBUG)
+import logging
 from gensim.models.ldamodel import LdaModel
-from gensim import corpora
+from gensim.corpora import Dictionary
+
 from classifier.base import TweetClassifier
-from gensim.corpora import TextCorpus, MmCorpus, Dictionary
+
+logging.basicConfig(filename='/tmp/example.log',level=logging.DEBUG)
 
 class LDATweetClassifier(TweetClassifier):
     nInstances = 0
@@ -15,18 +14,18 @@ class LDATweetClassifier(TweetClassifier):
 	self.nInstances += 1
         self.serno = self.nInstances
 	self.d = None
-	self.id2word = None
 	self.model = None
 	self.tolerance = tolerance
+	self.harassment = {}
         pass
 
     def isHarassingTweet(self, txt):
 	if self.model is None:
 	    # Nothing to see here
 	    return False
-	texts = txt.lower().split()
-	corpus_bow = self.d.doc2bow(texts)	# bag of words corpus
-	doc_lda = self.model[corpus_bow]
+
+	bow = self.d.doc2bow(txt.split())	# bag of words
+	doc_lda = self.model[bow]
         print(doc_lda)
 	harassing = any(_[1] > self.tolerance for _ in doc_lda)
         if harassing:
@@ -34,22 +33,32 @@ class LDATweetClassifier(TweetClassifier):
         return harassing
 
     def addHarassingTweet(self, txt):
-	words = txt.lower().split()
+	'''
+	Add an harassing tweet to the model corpus
 
-	#if self.d is None:
+	While gensim purports to train models incrementally,
+	it'll crash if you try.  Instead, we just rebuild
+	the model each time we get a new tweet, remembering
+	all the old ones as we go.
+	'''
+	if txt in self.harassment:
+	    return
+
+	words = txt.split()
+
+	if self.d is None:
 	    # build dictionary
-	self.d = gensim.corpora.dictionary.Dictionary([words])
-	self.d.save('/tmp/singletweet')
+	    self.d = Dictionary([words])
+
 	# generate bag of words
-	corpus_bow = self.d.doc2bow(words, allow_update=True)
-	if self.id2word is None:
-	   self.id2word = gensim.corpora.Dictionary.load('/tmp/singletweet')
-	if (self.model is not None) and (corpus_bow is not None):
-	    self.model.update([corpus_bow],update_every=1)
-	else:
-	    # build model using this first tweet
-	    self.model = LdaModel(corpus=None,num_topics=10,id2word=self.id2word, eval_every=10,update_every=1,passes=10)
-	os.remove('/tmp/singletweet')
+	bow = self.d.doc2bow(words, allow_update=True)
+	self.harassment[txt] = bow
+
+	corpus = []
+	for txt in self.harassment:
+	    corpus.append(self.harassment[txt])
+
+	self.model = LdaModel(corpus)
  
     def loadModel(self):
         pass
