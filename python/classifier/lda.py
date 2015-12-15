@@ -1,4 +1,5 @@
 import logging
+import os
 from gensim.models.ldamodel import LdaModel
 from gensim.corpora import Dictionary
 
@@ -45,20 +46,23 @@ class LDATweetClassifier(TweetClassifier):
 	    return
 
 	words = txt.split()
-
-	if self.d is None:
+	if os.path.exists('/tmp/MyDict.dict'): 
+	  self.d = Dictionary.load('/tmp/MyDict.dict')
+	  self.d = self.d.merge(Dictionary([words]))
+	else:
 	    # build dictionary
 	    self.d = Dictionary([words])
 
 	# generate bag of words
-	bow = self.d.doc2bow(words, allow_update=True)
-	self.harassment[txt] = bow
+	#bow = self.d.doc2bow(words, allow_update=True)
+	
+	#self.harassment[txt] = bow
 
-	corpus = []
-	for txt in self.harassment:
-	    corpus.append(self.harassment[txt])
+	#corpus = []
+	#for txt in self.harassment:
+	#    corpus.append(self.harassment[txt])
 
-	self.model = LdaModel(corpus)
+	self.model = LdaModel(id2word=self.d)
  
     def loadModel(self):
         pass
