@@ -7,7 +7,7 @@
 *.swp
 # Ignore temporary backups
 *-
-# Ignore Intellij files
+# Ignore IntelliJ files
 .idea
 # Ignore dirs where tweets are written
 tweets
