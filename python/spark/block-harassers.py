@@ -4,6 +4,7 @@ import json, re
 import xmlrpclib
 import tweepy
 import pprint
+from gensim.parsing.preprocessing import remove_stopwords
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils, TopicAndPartition
@@ -64,6 +65,9 @@ if __name__ == "__main__":
          # kill punctuation, except for @mentions and #hashtags and spaces
          lambda t: (t[0], re.sub("[^\w\s@#]+", '', t[1]))
       ).map(
+         # add text w/ stop words removed
+         lambda t: (t[0], t[1], remove_stopwords(t[1]))
+      ).map(
          # pprint() can only handle ascii, it seems
          lambda t: [ _.encode('ascii','ignore') for _ in t ]
       )
@@ -80,14 +84,14 @@ if __name__ == "__main__":
 
    tweets.count().pprint()
    preprocess(tweets).filter(
-      lambda t: c.isHarassingTweet(t[1])
+      lambda t: c.isHarassingTweet(t[2])
    ).map(
       lambda t: (k.xmit('harassers', json.dumps({ "author": t[0], "text": t[1] })), t)[1]
    ).pprint()
 
    harassing_tweets.count().pprint()
    preprocess(harassing_tweets).foreachRDD(
-      lambda rdd: rdd.foreach(lambda t: c.addHarassingTweet(t[1]))
+      lambda rdd: rdd.foreach(lambda t: (pp.pprint(t), c.addHarassingTweet(t[2])))
    )
 
    ssc.start()
