@@ -7,6 +7,7 @@
 *.swp
 # Ignore temporary backups
 *-
+run-sprak*
 #Ignore Intellij files
 .idea
 # Ignore dirs where tweets are written

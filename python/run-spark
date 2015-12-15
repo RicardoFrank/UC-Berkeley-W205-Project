@@ -26,5 +26,5 @@ if [[ "$BK" != *:* ]] ; then
 fi
 
 MASTER='local[2]' exec $SPARK_HOME/bin/spark-submit \
-	--jars $SPARK_HOME/external/kafka-assembly/target/spark-streaming-kafka-assembly_2.10-1.5.2.jar \
+	--jars $SPARK_HOME/external/kafka-assembly/target/spark-streaming-kafka-assembly_2.10-1.6.0-SNAPSHOT.jar \
 	spark/block-harassers.py $SPARK_HELP --broker $BK "$@"
