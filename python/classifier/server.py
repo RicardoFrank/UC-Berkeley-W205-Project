@@ -7,6 +7,8 @@ sys.path += [ os.getcwd() ]
 from classifier.rand import RandomTweetClassifier
 from classifier.key_word import KeywordTweetClassifier
 from classifier.lda import LDATweetClassifier
+from classifier.lsi import LSITweetClassifier
+
 from SimpleXMLRPCServer import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
 
 class handler(SimpleXMLRPCRequestHandler):
@@ -20,7 +22,8 @@ class handler(SimpleXMLRPCRequestHandler):
 
 #c = RandomTweetClassifier(p = 0.01)
 #c = KeywordTweetClassifier()
-c = LDATweetClassifier()
+#c = LDATweetClassifier()
+c = LSITweetClassifier()
 server = SimpleXMLRPCServer(('', 6666), handler, allow_none=True)
 print("Listening on port 6666...")
 server.register_function(lambda txt: (print('checking: ' + txt), c.isHarassingTweet(txt))[1], "isHarassingTweet")
