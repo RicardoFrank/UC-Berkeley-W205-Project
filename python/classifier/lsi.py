@@ -22,8 +22,9 @@ class LSITweetClassifier(TweetClassifier):
 	'''
 	Turn processed tweet text into a document used by the model
 	'''
+	self.docid += 1
 	return {
-	    'id': 'doc #%d' % str(self.docid++)
+	    'id': 'doc #%d' % self.docid
 	    , 'tokens': txt.split()
 	}
 
@@ -48,10 +49,10 @@ class LSITweetClassifier(TweetClassifier):
 
 	d = self._doc(txt)
 	if self.model is not None:
-	    self.model.index(d)
+	    self.model.index([d])
 	else:
 	    self.model = SessionServer('/tmp/lsi-tweet-classifier')
-	    self.model.train(d, method='lsi')
+	    self.model.train([d], method='lsi')
  
     def loadModel(self):
         pass
