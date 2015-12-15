@@ -65,7 +65,7 @@ to point them at remote endpoints.
 
 ## Start the tweet classifier
 
-    $ python classifer/server.py        # binds to all interfaces on port 6666
+    $ python classifier/server.py        # binds to all interfaces on port 6666
 
 ## Start the tweet injector
 
@@ -81,7 +81,7 @@ Once the injector is running, you'll see interesting output in all the other win
 
 From the first window
 
-    $ python frontends/add-harasser.py BerkeleyData
+    $ python frontends/add-harasser.py BerkeleyData --broker localhost
 
 This will add all of the datascience@berkeley tweets to the corpus of harassing tweets.
 Once this corpus is loaded, tweets similar to it will be marked as harassing
@@ -98,7 +98,7 @@ so restarting it will erase its corpus.
 
 Now, inject a single user's tweets into the tweet stream:
 
-    $ python frontends/add-harasser.py closemindedjerk --topic tweets
+    $ python frontends/add-harasser.py closemindedjerk --topic tweets --broker localhost
 
 Note the `--topic` switch.  That causes `add-harasser` to put @closemindedjerk's
 tweets into the kafka topic from which the Spark streaming job expects to
@@ -111,7 +111,7 @@ judged to be harassing.
 Now, add @closemindedjerk's tweets as harassment.
 In the first window, do:
 
-    $ python frontends/add-harasser.py closemindedjerk
+    $ python frontends/add-harasser.py closemindedjerk --broker localhost
 
 Then, re-check to see that @closemindedjerk's tweets are now considered harassment:
 
