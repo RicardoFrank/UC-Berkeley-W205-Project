@@ -41,6 +41,7 @@ class FileTweetStore(TweetStore):
       self._path = None
       self.maxTweets = maxTweets
       self.maxSize = maxSize
+      self.once = True if '%n' not in self.pathPattern else None
       ReentrantMethod(self, self.close)
 
    def _substPctN(self, pat):
@@ -55,8 +56,14 @@ class FileTweetStore(TweetStore):
       path = time.strftime(pat)
       return path
 
-
    def _nextPath(self):
+      if self.once is not None:
+	 if not self.once:
+	    return
+	 self.once = False
+	 self._path = self._makePath(self.nFiles)
+	 return
+
       path = self._path
       while path == None or os.path.exists(path):
          self.nFiles += 1
