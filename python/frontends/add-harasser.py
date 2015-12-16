@@ -5,7 +5,6 @@ import re
 import tweepy, json
 import traceback
 import argparse, pprint
-import re
 
 sys.path += [ os.getcwd() ]
 from util.reentrantmethod import ReentrantMethod
@@ -23,7 +22,7 @@ if __name__ == '__main__':
    p = argparse.ArgumentParser(
       description='Suck filtered tweets from twitter and write them into a store'
       , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-   p.add_argument('harassment', help='screen name of @harasser or a tweet id or a tweet URI')
+   p.add_argument('harassment', nargs='+', help='screen name of @harasser or a tweet id or a tweet URI or directory(ies) of tweet files')
    p.add_argument('--ntweets', dest='nTweets', type=int, default=1000
                                , help='number of recent tweets written by harasser to publish')
    p.add_argument('--max-tweets', dest='maxTweets', type=int, default=100
@@ -43,10 +42,12 @@ if __name__ == '__main__':
                                        , help='max bytes (more or less) written per tweet file')
 
    args = p.parse_args()
+   pp = pprint.PrettyPrinter(indent=4)
+   pp.pprint(args)
 
    # Handle mutually exclusive arguments;
    # ideally, argparse could handle this...
-   # but its argument groups that are
+   # but it's argument groups that are
    # mutually exclusive, not individual
    # arguments, so...nope.
    kafka = args.bk_endpt or args.topic
@@ -62,6 +63,11 @@ if __name__ == '__main__':
       args.pat = patDef
    if args.topic is None:
       args.topic = topicDef
+
+   if len(args.harassment) == 1 \
+      and not os.path.isdir(args.harassment[0]):
+         print('delisting')
+         args.harassment = args.harassment[0]
 
    # Bring in twitter creds; this file is *not*
    # in source code control; you've got to provide
@@ -90,7 +96,9 @@ if __name__ == '__main__':
    # Determine what to add as harassment
    harasser = None
    harassing_tweet = None
-   if args.harassment.startswith('@'):
+   if isinstance(args.harassment, list):
+      pass
+   elif args.harassment.startswith('@'):
       # A screen name
       harasser = args.harassment[1:]
    elif re.match('^http(s?)://twitter\.com/[^/]+/status/\d+$', args.harassment):
@@ -108,9 +116,35 @@ if __name__ == '__main__':
       def onetweet(id):
          yield api.get_status(id)
       iter = lambda: onetweet(harassing_tweet)
-   else:
+   elif harasser is not None:
       print("adding tweets from @%s to topic '%s'" % (harasser, args.topic))
       iter = tweepy.Cursor(api.user_timeline,screen_name=harasser, count=args.nTweets).items
+   else:
+      print("iterating over files in %s" % args.harassment)
+      def readfiles(dirs):
+         for d in dirs:
+            for path in os.listdir(d):
+               #print("opening '%s'" % path)
+               f = open('%s/%s' % (d, path), 'r')
+               s = f.read()
+               json = re.split("\n},?\n", s)
+               for j in json:
+                  #pp.pprint(j)
+                  if j[0] == '[':
+                     j = j[1:]
+                  j += "}"
+                  if j[0] != ']':
+                     #print('<<<%s>>>' % j)
+                     class x(object):
+                        def __init__(self, json):
+                           self._json = json
+                     #pp.pprint(x(j))
+                     if w.stopped:
+                        return
+                     yield x(j)
+            return
+
+      iter = lambda: (readfiles(args.harassment))
 
    try:
       for tweet in iter():
