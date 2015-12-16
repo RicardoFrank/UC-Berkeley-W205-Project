@@ -2,6 +2,7 @@
 . ./sh.fns
 
 [[ $ME == inject-tweets ]] &&
+[[ "$*" == *--broker* ]] &&
     set -- --topic tweets "$@"
 
 # add harasser does it all; changing the topic
