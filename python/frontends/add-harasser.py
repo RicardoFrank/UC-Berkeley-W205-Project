@@ -10,12 +10,20 @@ sys.path += [ os.getcwd() ]
 from util.reentrantmethod import ReentrantMethod
 from twitter.filetweetstore import FileTweetStore
 from twitter.kafkatweetstore import KafkaTweetStore
+from twitter.classifiertweetstore import ClassifierTweetStore
 from twitter.tweetwriter import TweetWriter
 from twitter.tweetserializer import TweetSerializer
 
 def interrupt(signum, frame):
    stream.disconnect()
    w.stop()
+
+def humanize(num, suffix='B'):
+    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)
 
 if __name__ == '__main__':
 
@@ -41,6 +49,11 @@ if __name__ == '__main__':
    fargs.add_argument('--max-file-size', dest='maxSize', type=int
                                        , help='max bytes (more or less) written per tweet file')
 
+   methodDef = 'isHarassingTweet'
+   cargs = p.add_argument_group('classifier', 'send tweets to a classifier (for benchmarking)')
+   cargs.add_argument('--classifier', dest='classifier', metavar='ENDPOINT', nargs='?', const='http://localhost:6666')
+   cargs.add_argument('--method', dest='meth', metavar='CLASSIFIER METHOD'
+                      , help='classifier method to call (default: %s)' % methodDef)
    args = p.parse_args()
    pp = pprint.PrettyPrinter(indent=4)
    pp.pprint(args)
@@ -52,8 +65,9 @@ if __name__ == '__main__':
    # arguments, so...nope.
    kafka = args.bk_endpt or args.topic
    file = args.pat or args.maxSize
-   if kafka and file:
-      print("can't mix both Kafka log and file store options\n",
+   classifier = args.classifier
+   if kafka and file or file and classifier or classifier and kafka:
+      print("can't mix different tweet store options\n",
             p.format_usage(), file=sys.stderr)
       exit(1)
    # We're forced to handle defaults
@@ -63,6 +77,8 @@ if __name__ == '__main__':
       args.pat = patDef
    if args.topic is None:
       args.topic = topicDef
+   if args.meth is None:
+      args.meth = methodDef
 
    if len(args.harassment) == 1 \
       and not os.path.isdir(args.harassment[0]):
@@ -85,8 +101,13 @@ if __name__ == '__main__':
    if kafka:
       if ':' not in args.bk_endpt: args.bk_endpt += ':%s' % portDef
       st = KafkaTweetStore(endpoint = args.bk_endpt, topic = args.topic, tweetsPerLine = args.maxTweets)
-   else:
+   elif classifier:
+      st = ClassifierTweetStore(endpoint = args.classifier, classify = args.meth == 'isHarassingTweet')
+   elif file:
       st = FileTweetStore(maxTweets = args.maxTweets, pathPattern=args.pat)
+   else:
+      print("omg, can't parse options")
+      exit(1)
    print("tweet store created: " + type(st).__name__)
    s = TweetSerializer(store = st)
    st.serializer = s
@@ -110,21 +131,23 @@ if __name__ == '__main__':
       # Default to a screen name
       harasser = args.harassment
 
+   if kafka:
+      store = "topic '%s'" % args.topic
+   elif file:
+      store = "file store '%s'" % args.pat
+   elif classifier:
+      store = 'classifier @ %s via .%s()' % (args.classifier, args.meth)
+
    if harassing_tweet is not None:
-      print("adding tweet id %s to %s" % (harassing_tweet,
-                                          "topic '%s'" % args.topic if kafka \
-                                          else "file store '%s'" % args.pat))
+      print("adding tweet id %s to %s" % (harassing_tweet, store))
       def onetweet(id):
          yield api.get_status(id)
       iter = lambda: onetweet(harassing_tweet)
    elif harasser is not None:
-      print("adding tweets from @%s to %s" % (harasser,
-                                              "topic '%s'" % args.topic if kafka \
-                                              else "file store '%s'" % args.pat))
-      #print("adding tweets from @%s to topic '%s'" % (harasser, args.topic))
+      print("adding tweets from @%s to %s" % (harasser, store))
       iter = tweepy.Cursor(api.user_timeline,screen_name=harasser, count=args.nTweets).items
    else:
-      print("iterating over files in %s" % args.harassment)
+      print("iterating over files in %s, adding them to %s" % (args.harassment, store))
       def readfiles(dirs):
          """
          Pump a directory of tweet files out as individual tweets.
@@ -152,6 +175,7 @@ if __name__ == '__main__':
 
       iter = lambda: (readfiles(args.harassment))
 
+   start = time.time()
    try:
       for tweet in iter():
          w.on_data(tweet._json)
@@ -161,5 +185,9 @@ if __name__ == '__main__':
       w.on_exception(sys.exc_info()[0])
 
    s.end()
+   dt = time.time() - start
+   print("%d bytes in %d tweets in %0.2f seconds: %0.2f tweets/sec, %0.2f bytes/sec, %s/sec"
+         % (st.totBytes, st.totTweets, dt, st.totTweets/dt, st.totBytes/dt, humanize(st.totBytes/dt)))
+
 
 # vim: expandtab shiftwidth=3 softtabstop=3 tabstop=3

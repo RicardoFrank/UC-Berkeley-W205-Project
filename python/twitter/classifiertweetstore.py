@@ -1,8 +1,10 @@
 from __future__ import print_function
 import sys
+import json, re
+from gensim.parsing.preprocessing import remove_stopwords
 
 from twitter.tweetstore import TweetStore
-from classifer.remote import RemoteTweetClassifier
+from classifier.remote import RemoteTweetClassifier
 
 class ClassifierTweetStore(TweetStore):
    """
@@ -12,8 +14,8 @@ class ClassifierTweetStore(TweetStore):
    def __init__(self, endpoint, classify=True, serializer = None, tweetsPerLine=100):
       """
       """
-      self.c = RemoteTweetClassifier(endpoint)
-      self.send = c.isHarassingTweet if classify else c.addHarassingTweet
+      self.c = RemoteTweetClassifier(endpoint, silent=True)
+      self.meth = self.c.isHarassingTweet if classify else self.c.addHarassingTweet
       self.tweetsPerLine = tweetsPerLine
       TweetStore.__init__(self, serializer)
       print("created CTS, tweetsPerLine %d" % self.tweetsPerLine)
@@ -46,12 +48,18 @@ class ClassifierTweetStore(TweetStore):
          self._logEol()
 
    def write(self, s):
-      """
-      write() makes no sense for a classifier
-      where messages are atomic units and
-      so don't require bytes to mark tweets
-      """
+      '''
+      We don't serialize, so do nothing
+      '''
       pass
+
+   def send(self, s):
+      tweet = json.loads(str(s))
+      if not 'user' in tweet: return
+      if not tweet['lang'] == 'en': return
+      txt = re.sub("[^\w\s@#]+", '', tweet['text']).lower()
+      txt = str(remove_stopwords(' '.join(sorted(txt.split()))))
+      self.meth(txt)
 
    def writeTweet(self,  tweet):
       """
