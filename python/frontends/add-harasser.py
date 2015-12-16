@@ -66,7 +66,6 @@ if __name__ == '__main__':
 
    if len(args.harassment) == 1 \
       and not os.path.isdir(args.harassment[0]):
-         print('delisting')
          args.harassment = args.harassment[0]
 
    # Bring in twitter creds; this file is *not*
@@ -88,7 +87,7 @@ if __name__ == '__main__':
       st = KafkaTweetStore(endpoint = args.bk_endpt, topic = args.topic, tweetsPerLine = args.maxTweets)
    else:
       st = FileTweetStore(maxTweets = args.maxTweets, pathPattern=args.pat)
-   print("tweet store created")
+   print("tweet store created: " + type(st).__name__)
    s = TweetSerializer(store = st)
    st.serializer = s
    w = TweetWriter(s.write)
@@ -112,33 +111,40 @@ if __name__ == '__main__':
       harasser = args.harassment
 
    if harassing_tweet is not None:
-      print("adding tweet id %s to topic '%s'" % (harassing_tweet, args.topic))
+      print("adding tweet id %s to %s" % (harassing_tweet,
+                                          "topic '%s'" % args.topic if kafka \
+                                          else "file store '%s'" % args.pat))
       def onetweet(id):
          yield api.get_status(id)
       iter = lambda: onetweet(harassing_tweet)
    elif harasser is not None:
-      print("adding tweets from @%s to topic '%s'" % (harasser, args.topic))
+      print("adding tweets from @%s to %s" % (harasser,
+                                              "topic '%s'" % args.topic if kafka \
+                                              else "file store '%s'" % args.pat))
+      #print("adding tweets from @%s to topic '%s'" % (harasser, args.topic))
       iter = tweepy.Cursor(api.user_timeline,screen_name=harasser, count=args.nTweets).items
    else:
       print("iterating over files in %s" % args.harassment)
       def readfiles(dirs):
+         """
+         Pump a directory of tweet files out as individual tweets.
+
+         It's useful for benchmarking, but it's otherwise awful.
+         Sorry. --Chris
+         """
          for d in dirs:
             for path in os.listdir(d):
-               #print("opening '%s'" % path)
                f = open('%s/%s' % (d, path), 'r')
                s = f.read()
-               json = re.split("\n},?\n", s)
-               for j in json:
-                  #pp.pprint(j)
+               js = re.split("\n},?\n", s)
+               for j in js:
                   if j[0] == '[':
                      j = j[1:]
                   j += "}"
                   if j[0] != ']':
-                     #print('<<<%s>>>' % j)
                      class x(object):
-                        def __init__(self, json):
-                           self._json = json
-                     #pp.pprint(x(j))
+                        def __init__(self, js):
+                           self._json = json.loads(str(js))
                      if w.stopped:
                         return
                      yield x(j)
