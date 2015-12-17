@@ -5,7 +5,6 @@
 * Amitabha Karmakar
 * Ricardo Barrera
 
-### We have java/scala and python sub-projects. The corresponding details of these sub-projects can be found in the individual directories
-
+All our implementation was finally done in python, please follow the README.md file under the python directory for further instructions.
 
    
