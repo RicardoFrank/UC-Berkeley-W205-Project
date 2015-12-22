@@ -37,7 +37,7 @@ class LSITweetClassifier(TweetClassifier):
 	    # Nothing to see here
 	    return False
 
-	sims = self.model.find_similar(self._doc(txt), min_score=self.tolerance, max_results=1)
+	sims = self.model.find_similar(self._doc(txt), min_score=self.tolerance, max_results=self.n_matches)
 	harassing = len(sims) >= self.n_matches
         if harassing:
             print ("    HARASSING tweet '" + txt + "'")
